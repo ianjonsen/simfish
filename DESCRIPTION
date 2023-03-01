@@ -1,0 +1,29 @@
+Package: deadsmolt
+Type: Package
+Title: simulate Miramichi River Atlantic salmon smolt migration & dead tag detections in the GSL
+Version: 0.3-04
+Date: 2023-02/27
+Author: Ian Jonsen
+Maintainer: Ian Jonsen <ian.jonsen@mq.edu.au>
+Description: simulate salmon smolt migration from the Miramichi River, NB as compound biased random walks with ocean current advection. Simulations include optional growth, survival, and tag expulsion components. Acoustic tag transimissons and detections along migration paths, conditional on real or simulated acoustic reciever arrays, glider or boat transects
+Depends: R (>= 3.5.2)
+Imports: 
+    dplyr,
+    ggplot2,
+    gganimate,
+    raster,
+    sp,
+    prevR,
+    tibble,
+    readr,
+    CircStats,
+    stats,
+    sf,
+    stars,
+    patchwork
+License: AGPL-3
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.2.1
+Suggests: 
+    rgeos
