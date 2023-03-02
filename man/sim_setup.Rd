@@ -4,14 +4,10 @@
 \alias{sim_setup}
 \title{Pre-simulation setup}
 \usage{
-sim_setup(config = config, deadsmolt = FALSE, esrf = TRUE)
+sim_setup(config = config)
 }
 \arguments{
 \item{config}{- path to config.R script containing file.paths for required & optional environmental layers (see Details)}
-
-\item{deadsmolt}{- logical; turns on Miramichi & SoBI receiver locations if TRUE}
-
-\item{esrf}{- logical; turns off receiver & ESRF polygons if FALSE}
 }
 \description{
 load required rasters, receiver locations

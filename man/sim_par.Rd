@@ -4,52 +4,13 @@
 \alias{sim_par}
 \title{Control Values for \code{simulate}.}
 \usage{
-sim_par(
-  move = c("brw", "rw", "drift"),
-  temp = TRUE,
-  advect = TRUE,
-  noise = NULL,
-  growth = TRUE,
-  shelf = TRUE,
-  scenario = "sobi",
-  land = FALSE,
-  boundary = FALSE,
-  ...
-)
+sim_par(...)
 }
 \arguments{
-\item{move}{"brw" a biased RW; "rw" simple RW; "drift" no active swimming}
-
-\item{temp}{logical}
-
-\item{advect}{logical}
-
-\item{noise}{numeric; add small random component to u,v vectors - only applies when mode = "drift"}
-
-\item{growth}{logical}
-
-\item{shelf}{logical; should smolts be constrained to stay in water > - 1000 m depth (continental shelf)}
-
-\item{scenario}{migration scenarios: rs = repeat spawner (kelts only)}
-
-\item{land}{keep track of sim rep hitting land (TRUE)}
-
-\item{boundary}{keep track of sim rep hitting sim boundary (TRUE)}
-
-\item{...}{additional simulation control parameters}
+\item{...}{simulation control parameters}
 }
 \value{
-Returns a list with components
-  \item{\code{move}}{the main move process}
-  \item{\code{temp}}{temperature-dependent movements}
-  \item{\code{advect}}{ocean-current-dependent movements}
-  \item{\code{noise}}{add random noise to current u,v values}
-  \item{\code{growth}}{temperature-dependent growth}
-  \item{\code{shelf}}{movements constrained to stay on shelf}
-  \item{\code{migs}}{migration strategy}
-  \item{\code{land}}{record if smolt gets "stuck" on land, thereby ending simulation}
-  \item{\code{boundary}}{record if smolt hits simulation boundary, thereby ending simulation}
-  \item{\code{pars}}{list of additional, required control parameters}
+...
 }
 \description{
 \code{sim_par} defines the simulation parameters & control scenarios used by \code{simulate}.

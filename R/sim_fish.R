@@ -38,15 +38,12 @@ sim_fish <-
     xy[1,] <- cbind(mpar$start)
     ds <- matrix(NA, N, 4) #x, y, s
 
-    s <- mpar$fl * mpar$bl # units = m/s
+    s <- mpar$fl/1000 * mpar$bl * 60 * mpar$time.step # convert from m/s to km/min * mpar$time.step
 
     ## iterate movement
     for (i in 2:N) {
       if(i==2 && pb)  tpb <- txtProgressBar(min = 2, max = N, style = 3)
 
-      ## calculate potential fn values
-      pv <- c(extract(data$grad[[1]], rbind(xy[i-1,]))[1],
-              extract(data$grad[[2]], rbind(xy[i-1,]))[1])
 
       ## Movement kernel
       xy[i, 1:2] <- move_kernel(data,
@@ -81,8 +78,7 @@ sim_fish <-
         x = xy[, 1],
         y = xy[, 2],
         dx = ds[, 1] - lag(xy[, 1]),
-        dy = ds[, 2] - lag(xy[, 2]),
-        phi = phi
+        dy = ds[, 2] - lag(xy[, 2])
       )[1:N,]
 
     sim <- X %>% as_tibble()
@@ -90,16 +86,15 @@ sim_fish <-
     ## remove records after sim is stopped for being stuck on land, etc...
     if(mpar$land | mpar$boundary) {
       sim <- sim %>%
-        filter(!is.na(x) & !is.na)
+        filter(!is.na(x) & !is.na(y))
     }
 
     nsim <- nrow(sim)
 
-
  ## add time - base is 1 min intervals
     sim <- sim %>%
       mutate(id = id) %>%
-      mutate(date = seq(mpar$pars$start.dt, by = 60 * mpar$pars$time.interval, length.out = nsim)) %>%
+      mutate(date = seq(mpar$start.dt, by = 60 * mpar$time.step, length.out = nsim)) %>%
       select(id, date, everything())
 
     param <- mpar

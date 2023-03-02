@@ -86,7 +86,7 @@ sim_detect <-
 
       if(!is.null(trans)) {
       detect <- trans %>%
-        pdet(trs = ., rec = recLocs[, c("id","locality","x","y","z")], b = b, noise = noise)
+        pdet(trs = ., rec = recLocs[, c("id","x","y","z")], b = b, noise = noise)
       } else {
         detect <- NULL
       }

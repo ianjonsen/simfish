@@ -22,17 +22,20 @@ sim_par <-
     mpar <- list(
       N = 1440,
       start.dt = ISOdatetime(2023,05,25,16,00,00, tz = "UTC"),
-      start = c(6912, 1465),
-      coa = c(7120, 2350),
+      time.step = 1, # in minutes
+      start = c(6912, 1465), # start coordinates, units = km
+      coa = c(7120, 2350), # centre of attraction coordinates, units = km
       rho = 0.4, # directional persistence for brw
-      bl = 2, # weibull scale parameter
-      fl = 0.15,
-      pdrf = c(5, -0.02), # = p(0.5) @ 250 m  + < 0.01 @ 500 m   [c(4.865, -0.0139)  (~ consistent w HFX line V9 @ high power)]
-      beta = c(-200, -200) # potential fn params to keep fish off land
+      bl = 2, # weibull scale parameter (in body lengths)
+      fl = 0.15, # forklength (in m)
+      pdrf = c(5, -0.02), # = p(0.5) @ 250 m  + < p(0.01) @ 500 m   [c(4.865, -0.0139)  (~ consistent w HFX line V9 @ high power)]
+      beta = c(-200, -200), # potential fn params to keep fish off land
+      land = FALSE,
+      boundary = FALSE
     )
 
     ## overide default control pars
     mpar[names(dots)] <- dots
 
-    list(mpar = mpar)
+    mpar
   }

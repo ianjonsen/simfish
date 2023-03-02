@@ -4,7 +4,7 @@
 \alias{move_kernel}
 \title{random walk movement kernel for Miramichi smolts}
 \usage{
-move_kernel(data, xy = NULL, mpar, i, s, ts, d2l, dir2l)
+move_kernel(data, xy = NULL, mpar, s, pv)
 }
 \description{
 utility function not to be called by user
