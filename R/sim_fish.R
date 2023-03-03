@@ -1,12 +1,12 @@
 #' @title simulate a fish track
 #'
-#' @description simulates fish tracks
+#' @description simulates fish tracks on a user-supplied raster depicting a water body
 #'
 #' @author Ian Jonsen \email{ian.jonsen@mq.edu.au}
 #'
 #' @param id - identifier for simulation run (individual animal)
-#' @param data - a list of required data from \code{presim}
-#' @param mpar - simulation control parameters supplied as a list, see details
+#' @param data - a list of required data from `sim_setup()`
+#' @param mpar - simulation control parameters supplied as a list using `sim_par()`
 #' @param pb - use progress bar (logical)
 #' @importFrom raster extract xyFromCell
 #' @importFrom CircStats rwrpcauchy

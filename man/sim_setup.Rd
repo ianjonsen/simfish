@@ -7,7 +7,7 @@
 sim_setup(config = config)
 }
 \arguments{
-\item{config}{- path to config.R script containing file.paths for required & optional environmental layers (see Details)}
+\item{config}{- path to config.R script containing file.paths for required & optional data}
 }
 \description{
 load required rasters, receiver locations

@@ -37,11 +37,6 @@ path length and velocity. Next, delays are simulated and burst durations
 are added toeach delay to determine the time of each signal transmission.
 Location of each signal transmission along the path is linearly interpolated.
 }
-\note{
-This function was written to be called before
-  \code{\link{detect_transmissions}}, which was designed to accept the result
-  as input (\code{trnsLoc}).
-}
 \examples{
 mypath <- data.frame(x=seq(0,1000,100),y=seq(0,1000,100))
 mytrns <- transmit_along_path(mypath,vel=0.5,delayRng=c(60,180),burstDur=5.0)
@@ -52,3 +47,4 @@ points(mytrns,pch=20,col="red")
 \author{
 C. Holbrook \email{cholbrook@usgs.gov}
 }
+\keyword{internal}

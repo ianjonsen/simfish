@@ -26,10 +26,6 @@
 #'   \item{y}{ y coordinates for start of each transmission }
 #'   \item{et}{ elapsed time to start of each transmission }
 #'
-#' @note
-#' This function was written to be called before
-#'   \code{\link{detect_transmissions}}, which was designed to accept the result
-#'   as input (\code{trnsLoc}).
 #'
 #' @author C. Holbrook \email{cholbrook@usgs.gov}
 #'
@@ -40,7 +36,8 @@
 #' points(mytrns,pch=20,col="red")
 #'
 #' @importFrom stats runif approx
-#' @export
+#' @keywords internal
+
 sim_transmit <- function(path = NA, delayRng = c(60, 180), burstDur = 5.0) {
   #cumulative distance travelled in meters
   path$cumdistm <- c(0, cumsum(sqrt(diff(path$x)^2 + diff(path$y)^2)))
