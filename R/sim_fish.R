@@ -77,8 +77,8 @@ sim_fish <-
       data.frame(
         x = xy[, 1],
         y = xy[, 2],
-        dx = ds[, 1] - lag(xy[, 1]),
-        dy = ds[, 2] - lag(xy[, 2])
+        dx = xy[, 1] - lag(xy[, 1]),
+        dy = xy[, 2] - lag(xy[, 2])
       )[1:N,]
 
     sim <- X %>% as_tibble()

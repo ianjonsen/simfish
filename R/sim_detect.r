@@ -13,7 +13,7 @@
 #' @importFrom sf st_as_sf st_contains
 #' @importFrom raster buffer
 #' @importFrom prevR point.in.SpatialPolygons
-#' @importFrom dplyr %>% bind_rows mutate arrange desc
+#' @importFrom dplyr %>% bind_rows mutate arrange desc as_tibble
 #' @importFrom stats plogis
 #' @export
 #'
@@ -28,7 +28,7 @@ sim_detect <-
 
     recLocs <- data$recLocs
     trans <- tmp.tr <- dt <- tmp.dt <- NULL
-    b <- s$params$pars$pdrf
+    b <- s$params$pdrf
 
     if(exists("rec", data)) {
       if (data$rec == "lines") {
@@ -40,7 +40,7 @@ sim_detect <-
         ## drop rec lines that smolt did not cross
         in.rng <- in.rng[which(sapply(in.rng, length) > 0)]
 
-        ## simulate transmissions
+        ## simulate transmission
         trans <- lapply(1:length(in.rng), function(i) {
           path <- s$sim[in.rng[[i]], c("id", "date", "x", "y")]
           path[, c("x", "y")] <- path[, c("x", "y")] * 1000
@@ -91,12 +91,9 @@ sim_detect <-
         detect <- NULL
       }
 
-#      s$trans <- trans %>%
-#        select(id, date, x, y) %>%
-#        arrange(date)
-
       if(!is.null(detect)) {
       s$detect <- detect %>%
+        as_tibble() %>%
         arrange(date, recv_id, trns_id)
       } else {
         s$detect <- detect
