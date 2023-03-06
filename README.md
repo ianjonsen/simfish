@@ -78,12 +78,12 @@ writeRaster(land, file = "data/land.grd", overwrite = TRUE)
 
 ``` r
 ## first create a list with the required data
-d <- list(land = raster("data/land.grd"), 
+x <- list(land = raster("data/land.grd"), 
           grad = stack("data/grad.grd"), 
           prj = "+proj=merc +datum=WGS84 +units=km")
 
 ## then parameterize the simulation
-my.par <- simfish::sim_par(
+my.par <- sim_par(
   N = 70*24,  # number of simulation time steps (60 days x 24 h)
   start = c(-7260, 5930), # start location for simulated fish
   start.dt = ISOdatetime(2023,03,01,12,00,00, tz="UTC"), # start date-time
@@ -99,18 +99,13 @@ my.par <- simfish::sim_par(
 )
 ```
 
-## Run simulation
+## Simulate a single track as a biased & correlated random walk
 
 ``` r
-## specify random seed to ensure same track is simulated each time this .Rmd runs
-##  DO NOT do this for 'real' applications!
-set.seed(100)
-
 ## simulate a single track
 out <- sim_fish(id = 1, 
-                data = d, 
-                mpar = my.par,
-                pb = FALSE) # turn off progress bar for tidy Rmd result
+                data = x, 
+                mpar = my.par)
 ```
 
 ## Visualise simulated track
@@ -119,7 +114,7 @@ out <- sim_fish(id = 1,
 ## convert raster to stars object
 
 ggplot() +
-  stars::geom_stars(data = stars::st_as_stars(d$land)) +
+  stars::geom_stars(data = stars::st_as_stars(x$land)) +
   geom_point(data = out$sim, 
              aes(x, y), 
              size = 0.1, 
