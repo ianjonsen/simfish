@@ -25,6 +25,7 @@ sim_par <-
       time.step = 1, # in minutes
       start = c(6912, 1465), # start coordinates, units = km
       coa = c(7120, 2350), # centre of attraction coordinates, units = km
+      nu = 5, # strength of attraction to coa (range: 0 - infinity)
       rho = 0.4, # directional persistence for brw
       bl = 2, # weibull scale parameter (in body lengths)
       fl = 0.15, # forklength (in m)

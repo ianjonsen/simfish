@@ -7,20 +7,23 @@
 #' @importFrom raster extract xyFromCell
 #' @export
 #'
-move_kernel <- function(data, xy = NULL, mpar, s, pv) {
+move_kernel <- function(data, xy = NULL, mpar, s) {
 
   ## biased random walk toward a Center of Attraction
   if(all(!is.na(mpar$coa))) {
     delta <- c(mpar$coa[1] - xy[1], mpar$coa[2] - xy[2])
-    mu <- atan2(delta[1], delta[2])
+    psi <- atan2(delta[1], delta[2])
+
+    phi <- atan2(sin(xy[3]) + mpar$nu * sin(psi), cos(xy[3]) + mpar$nu * cos(psi))
+
   } else {
-    mu <- 45/180*pi
+    phi <- atan2(sin(xy[3]), cos(xy[3]))
   }
 
   ## fixed rho gives strength of bias to the CoA
-  phi <- rwrpcauchy(1, mu, mpar$rho)
+  mu <- rwrpcauchy(1, phi, mpar$rho)
 
-  new.xy.tmp <- cbind(xy[1] + sin(phi) * s, xy[2] + cos(phi) * s)
+  new.xy.tmp <- cbind(xy[1] + sin(mu) * s, xy[2] + cos(mu) * s)
 
   ## calculate potential fn values
   pv <- c(extract(data$grad[[1]], new.xy.tmp)[1],
@@ -43,6 +46,6 @@ move_kernel <- function(data, xy = NULL, mpar, s, pv) {
     }
   }
 
-  cbind(new.xy[1], new.xy[2])
+  cbind(new.xy[1], new.xy[2], mu)
 
 }

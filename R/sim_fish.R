@@ -32,11 +32,11 @@ sim_fish <-
     N <- mpar$N
 
     ## define location matrix & initialise start position
-    ## ds - active swimming displacements
-    ## dl - displacements to deflect away from land
-    xy <- matrix(NA, N, 2)
-    xy[1,] <- cbind(mpar$start)
-    ds <- matrix(NA, N, 4) #x, y, s
+    ## xy[, 1:2] - location coordinates
+    ## xy[, 3] - mean turn angle
+    xy <- matrix(NA, N, 3)
+    xy[1, 1:2] <- cbind(mpar$start)
+    xy[1, 3] <- 0
 
     s <- mpar$fl/1000 * mpar$bl * 60 * mpar$time.step # convert from m/s to km/min * mpar$time.step
 
@@ -44,22 +44,20 @@ sim_fish <-
     for (i in 2:N) {
       if(i==2 && pb)  tpb <- txtProgressBar(min = 2, max = N, style = 3)
 
-
       ## Movement kernel
-      xy[i, 1:2] <- move_kernel(data,
-                         xy = xy[i-1,],
+      xy[i, ] <- move_kernel(data,
+                         xy = xy[i-1, ],
                          mpar = mpar,
-                         s,
-                         pv)
+                         s)
 
 
-      if(!is.na(extract(data$land, rbind(xy[i, ])))  & any(!is.na(xy[i,]))) {
+      if(!is.na(extract(data$land, rbind(xy[i, 1:2])))  & any(!is.na(xy[i, 1:2]))) {
         mpar$land <- TRUE
         cat("\n stopping simulation: stuck on land")
         break
       }
 
-      if(any(is.na(xy[i, ]))) {
+      if(any(is.na(xy[i, 1:2]))) {
         mpar$boundary <- TRUE
         cat("\n stopping simulation: hit a boundary")
         break
@@ -73,12 +71,14 @@ sim_fish <-
     }
 
     N <- ifelse(!is.na(which(is.na(xy[,1]))[1] - 1), which(is.na(xy[,1]))[1] - 1, N)
+
     X <-
       data.frame(
         x = xy[, 1],
         y = xy[, 2],
         dx = xy[, 1] - lag(xy[, 1]),
-        dy = xy[, 2] - lag(xy[, 2])
+        dy = xy[, 2] - lag(xy[, 2]),
+        mu = xy[, 3]
       )[1:N,]
 
     sim <- X %>% as_tibble()
