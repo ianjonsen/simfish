@@ -149,8 +149,10 @@ recLocs <- bind_cols(recLocs, xy) %>%
 ## add receiver locations to data
 x$recLocs <- recLocs
 
-## simulate detections of a V12 acoustic tag
-my.par$pdrf <- c(5, -0.01) # parameters (intercept, slope) from a logistic regression of distance on detection rate
+## simulate detections of a V13 acoustic tag
+##   parameters (intercept, slope) from a logistic regression of distance on 
+##   detection rate
+my.par$pdrf <- c(5, -0.01) 
 out <- out %>%
   sim_detect(data = x)
 ```
