@@ -12,7 +12,6 @@
 #' @importFrom sp Polygon Polygons SpatialPolygons CRS
 #' @importFrom sf st_as_sf st_contains
 #' @importFrom raster buffer
-#' @importFrom prevR point.in.SpatialPolygons
 #' @importFrom dplyr %>% bind_rows mutate arrange desc as_tibble
 #' @importFrom stats plogis
 #' @export

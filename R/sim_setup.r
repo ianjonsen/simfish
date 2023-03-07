@@ -6,10 +6,6 @@
 #' @author Ian Jonsen \email{ian.jonsen@mq.edu.au}
 #'
 #' @param config - path to config.R script containing file.paths for required & optional data
-#' @importFrom raster raster stack brick projectRaster extract
-#' @importFrom sp coordinates<- proj4string<- CRS spTransform SpatialPointsDataFrame spsample
-#' @importFrom sf st_as_sf st_sample st_coordinates st_distance
-#' @importFrom dplyr select filter rename bind_cols %>% tibble distinct
 #' @export
 #'
 sim_setup <-

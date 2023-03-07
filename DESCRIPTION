@@ -1,26 +1,25 @@
 Package: simfish
 Type: Package
-Title: simulate fish tracks
+Title: simulate fish tracks & acoustic detections
 Version: 0.1
 Date: 2023-02/27
 Author: Ian Jonsen
 Maintainer: Ian Jonsen <ian.jonsen@mq.edu.au>
-Description: simulate fish tracks
-Depends: R (>= 3.5.2)
+Description: facilitates simulation of fish tracks in semi-realistic environments (coastal oceans, fjords, and lakes). A user-supplied raster defining the water body - land boundaries is used to constrain simulated tracks. Fish movements are simulated (currently) as either a correlated random walk or a biased & correlated random walk, with the bias toward a defined Centre-of-Attraction. A potential function is used to ensure the tracks avoid land. The package can also be used to simulate detections of acoustically-tagged fish by acoustic receivers at user-defined locations.
+URL: https://github.com/ianjonsen/simfish/,
+Depends: R (>= 4.2.0)
 Imports: 
     dplyr,
     ggplot2,
     gganimate,
     raster,
     sp,
-    prevR,
     tibble,
-    readr,
     CircStats,
     stats,
     sf,
-    stars,
-    patchwork
+    lubridate,
+    stringr
 License: AGPL-3
 Encoding: UTF-8
 LazyData: true
