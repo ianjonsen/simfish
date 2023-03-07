@@ -50,8 +50,7 @@ sim_fish <-
                          mpar = mpar,
                          s)
 
-
-      if(!is.na(extract(data$land, rbind(xy[i, 1:2])))  & any(!is.na(xy[i, 1:2]))) {
+      if(!is.na(extract(data$land, rbind(xy[i, 1:2]))) & any(!is.na(xy[i, 1:2]))) {
         mpar$land <- TRUE
         cat("\n stopping simulation: stuck on land")
         break
@@ -67,7 +66,7 @@ sim_fish <-
         setTxtProgressBar(tpb, i)
         if(i==N) close(tpb)
       }
-
+    #print(i)
     }
 
     N <- ifelse(!is.na(which(is.na(xy[,1]))[1] - 1), which(is.na(xy[,1]))[1] - 1, N)

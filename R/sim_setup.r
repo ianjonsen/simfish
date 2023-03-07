@@ -19,13 +19,12 @@ sim_setup <-
     if(is.null(prj)) prj <- "+proj=merc +datum=WGS84 +units=km"
 
     out <- list(
-      land = suppressWarnings(raster(land)),
-      grad = suppressWarnings(stack(grad))
+      land = land,
+      grad = grad,
+      recLocs = recs,
+      recPoly = recPoly,
+      prj = prj
     )
-
-    out[["recLocs"]] <- recs
-    out[["recPoly"]] <- recPoly_sf
-    out[["prj"]] <- prj
 
     return(out)
   }

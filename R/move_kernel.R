@@ -36,10 +36,10 @@ move_kernel <- function(data, xy = NULL, mpar, s) {
     pv <- c(extract(data$grad[[1]], new.xy)[1],
             extract(data$grad[[2]], new.xy)[1])
     new.xy <- new.xy.tmp + pv * (mpar$beta * 3)
-    ## if still on land then move to closest point in water
+    ## if still on land then move back to water
     if(!is.na(extract(data$land, new.xy))) {
-      ## find all nearby cells within 0.2 km & select the first one in water
-      cells <- extract(data$land, rbind(new.xy.tmp), buffer = 0.2, cellnumbers = TRUE, df = TRUE)
+      ## find all nearby cells within mpar$buffer km & select the first one in water
+      cells <- extract(data$land, rbind(new.xy.tmp), buffer = mpar$buffer, cellnumbers = TRUE, df = TRUE)
       idx <- which(is.na(cells[,3]))[1]
       cell.water <- cells[idx,2]
       new.xy <- xyFromCell(data$land, cell.water) %>% rbind()
