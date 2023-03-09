@@ -8,9 +8,9 @@
 #' @param data - a list of required data from `sim_setup()`
 #' @param mpar - simulation control parameters supplied as a list using `sim_par()`
 #' @param pb - use progress bar (logical)
-#' @importFrom raster extract xyFromCell
+#' @importFrom raster extract xyFromCell nlayers
 #' @importFrom CircStats rwrpcauchy
-#' @importFrom dplyr %>% mutate lag
+#' @importFrom dplyr %>% mutate lag select
 #' @importFrom tibble as_tibble
 #' @importFrom stats runif rbinom
 #' @importFrom lubridate week yday
@@ -25,9 +25,12 @@ sim_fish <-
   ) {
 
 
-    if (is.null(data))
-      stop("Can't find output from sim_setup()\n")
-    if (class(data$land)[1] != "RasterLayer") stop("d2land must be a RasterLayer")
+    if (!is.null(data)) {
+      if (class(data$land)[1] != "RasterLayer") stop("land must be a RasterLayer")
+      if (class(data$grad)[1] != "RasterStack") stop("grad must be a RasterStack")
+      if (class(data$grad)[1] == "RasterStack" & nlayers(data$grad) != 2)
+        stop("grad must be a RasterStack with 2 layers")
+    }
 
     N <- mpar$N
 
@@ -50,16 +53,19 @@ sim_fish <-
                          mpar = mpar,
                          s)
 
-      if(!is.na(extract(data$land, rbind(xy[i, 1:2]))) & any(!is.na(xy[i, 1:2]))) {
-        mpar$land <- TRUE
-        cat("\n stopping simulation: stuck on land")
-        break
-      }
+      if (!is.null(data$land)) {
+        if (!is.na(extract(data$land, rbind(xy[i, 1:2]))) &
+            any(!is.na(xy[i, 1:2]))) {
+          mpar$land <- TRUE
+          cat("\n stopping simulation: stuck on land")
+          break
+        }
 
-      if(any(is.na(xy[i, 1:2]))) {
-        mpar$boundary <- TRUE
-        cat("\n stopping simulation: hit a boundary")
-        break
+        if (any(is.na(xy[i, 1:2]))) {
+          mpar$boundary <- TRUE
+          cat("\n stopping simulation: hit a boundary")
+          break
+        }
       }
 
       if(pb){
@@ -94,7 +100,7 @@ sim_fish <-
     sim <- sim %>%
       mutate(id = id) %>%
       mutate(date = seq(mpar$start.dt, by = 60 * mpar$time.step, length.out = nsim)) %>%
-      select(id, date, everything())
+      dplyr::select(id, date, everything())
 
     param <- mpar
     out <- list(sim = sim, params = param)

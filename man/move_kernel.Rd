@@ -9,3 +9,4 @@ move_kernel(data, xy = NULL, mpar, s)
 \description{
 utility function not to be called by user
 }
+\keyword{internal}

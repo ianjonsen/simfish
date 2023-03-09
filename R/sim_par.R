@@ -1,17 +1,19 @@
-##' \code{sim_par} defines the simulation parameters & control scenarios used by \code{simulate}.
+##' @title Define the simulation parameters used by \code{sim_fish}
 ##'
-##' The movement process used predominantly in the simulation is
-##' selected by the \code{move} argument.  Additional
-##' parameters include: \code{temp} is movement temperature-dependent; \code{advect} do ocean
-##' currents influence movement; \code{growth} do smolts grow in temp-dependent fashion;
-##' \code{start.date};
-##' \code{start} (location); \code{coa} centre of attraction (can be NULL);
-##' \code{mdir} directional bias (a 2-element vector);
-##' \code{rho} concentration of step directions (for wrapped-Cauchy, a 2-element vector); ...
+##' @description Define simulation parameters
 ##'
-##' @title Control Values for \code{simulate}.
 ##' @param ... simulation control parameters
-##' @return ...
+##' @return Returns a list of simulation parameters to be used by \code{sim_fish}.
+##' See example, below
+##'
+##' @examples
+##' ## A minimal example - simulation with no environment
+##' my.par <- sim_par(N = 1440, time.step = 5, start = c(0, 0), coa = c(0,30))
+##'
+##' out <- sim_fish(id = 1, mpar = my.par)
+##' plot(out)
+##'
+##'
 ##' @export
 
 sim_par <-
@@ -20,12 +22,12 @@ sim_par <-
     dots <- list(...)
 
     mpar <- list(
-      N = 1440,
-      start.dt = ISOdatetime(2023,05,25,16,00,00, tz = "UTC"),
-      time.step = 1, # in minutes
-      start = c(6912, 1465), # start coordinates, units = km
-      coa = c(7120, 2350), # centre of attraction coordinates, units = km
-      nu = 5, # strength of attraction to coa (range: 0 - infinity)
+      N = 250,
+      start.dt = ISOdatetime(2023,03,15,12,00,00, tz = "UTC"),
+      time.step = 30, # in minutes
+      start = c(0, 0), # start coordinates, units = km
+      coa = c(15, 30), # centre of attraction coordinates, units = km
+      nu = 1, # strength of attraction to coa (range: 0 - infinity)
       rho = 0.4, # directional persistence for brw
       bl = 2, # weibull scale parameter (in body lengths)
       fl = 0.15, # forklength (in m)

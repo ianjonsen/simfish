@@ -2,7 +2,7 @@
 % Please edit documentation in R/sim_par.R
 \name{sim_par}
 \alias{sim_par}
-\title{Control Values for \code{simulate}.}
+\title{Define the simulation parameters used by \code{sim_fish}}
 \usage{
 sim_par(...)
 }
@@ -10,18 +10,18 @@ sim_par(...)
 \item{...}{simulation control parameters}
 }
 \value{
-...
+Returns a list of simulation parameters to be used by \code{sim_fish}.
+See example, below
 }
 \description{
-\code{sim_par} defines the simulation parameters & control scenarios used by \code{simulate}.
+Define simulation parameters
 }
-\details{
-The movement process used predominantly in the simulation is
-selected by the \code{move} argument.  Additional
-parameters include: \code{temp} is movement temperature-dependent; \code{advect} do ocean
-currents influence movement; \code{growth} do smolts grow in temp-dependent fashion;
-\code{start.date};
-\code{start} (location); \code{coa} centre of attraction (can be NULL);
-\code{mdir} directional bias (a 2-element vector);
-\code{rho} concentration of step directions (for wrapped-Cauchy, a 2-element vector); ...
+\examples{
+## A minimal example - simulation with no environment
+my.par <- sim_par(N = 1440, time.step = 5, start = c(0, 0), coa = c(0,30))
+
+out <- sim_fish(id = 1, mpar = my.par)
+plot(out)
+
+
 }
