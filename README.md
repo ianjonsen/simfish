@@ -71,68 +71,25 @@ plot(out)
 ## Example 2 - simulate fish tracks in a semi-realistic environment
 
 ``` r
-require(raster, quietly = TRUE)
-require(sf, quietly = TRUE)
 require(stars, quietly = TRUE)
 ```
 
 ## Create an environment to simulate fish movements
 
 ``` r
-## create raster using rnaturalearth polygon data
-land <- rnaturalearth::ne_countries(scale = 10, returnclass = "sf") %>%
-    sf::st_transform(crs = 4326) %>%
-    sf::st_crop(xmin=-68, ymin=43.5, xmax=-52, ymax=52) %>%
-    sf::st_make_valid()
-
-## rasterise
-land <- as(land, "Spatial")
-
-## rasterize at a high resolution for a pretty map
-##  a lower resolution will run faster
-land <- raster::raster(crs = crs(land), 
-                   vals = 1, 
-                   resolution = c(0.01, 0.01), 
-                   ext = extent(c(-68, -52, 43.5, 52))) %>% 
-  raster::rasterize(land, .)
-
-## reproject to Mercator grid in km
-## in principle, any projection will work as long as the units are in km
-ext <- raster::projectExtent(land, crs = "+proj=merc +datum=WGS84 +units=km")
-land <- raster::projectRaster(land, ext)
-land[land > 1] <- 1
-land2 <- land # make a copy
-
-## set water = 1 & all land values to NA
-land2[is.na(land2)] <- -1
-land2[land2 == 1] <- NA
-land2[land2 == -1] <- 1
-
-## calculate gradient rasters - these are needed to keep fish off land
-dist <- raster::distance(land2)
-grad <- ctmcmove::rast.grad(dist)
-grad <- raster::stack(grad$rast.grad.x, grad$rast.grad.y)
-
-## write files for repeated use
-writeRaster(grad, file = "data/grad.grd", overwrite = TRUE)
-writeRaster(land, file = "data/land.grd", overwrite = TRUE)
+## create raster 
+land <- generate_env(ext = c(-70,43,-52,53), 
+                     res = c(0.03,0.03)) 
+#> Error in crs(env) : could not find function "crs"
+grad <- generate_grad(land)
 ```
-
-## Here is the land raster we’ve just created
-
-``` r
-
-raster::plot(land)
-```
-
-<img src="man/figures/README-map land-1.png" width="100%" />
 
 ## Set up the simulation
 
 ``` r
 ## first create a list with the required data
-x <- list(land = raster("data/land.grd"), 
-          grad = stack("data/grad.grd"), 
+x <- list(land = land, 
+          grad = grad, 
           prj = "+proj=merc +datum=WGS84 +units=km")
 
 ## then parameterize the simulation

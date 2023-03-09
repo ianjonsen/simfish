@@ -11,7 +11,7 @@
 ##' @return a ggplot object
 ##'
 ##' @importFrom ggplot2 ggplot geom_path geom_point aes theme_dark coord_fixed
-##' @importFrom dplyr %>% bind_rows
+##' @importFrom dplyr "%>%" bind_rows
 ##' @method plot simfish
 ##'
 ##' @examples
