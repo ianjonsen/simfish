@@ -80,7 +80,7 @@ require(stars, quietly = TRUE)
 ## create raster 
 land <- generate_env(ext = c(-70,43,-52,53), 
                      res = c(0.03,0.03)) 
-#> Error in crs(env) : could not find function "crs"
+
 grad <- generate_grad(land)
 ```
 
