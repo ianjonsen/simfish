@@ -32,12 +32,49 @@ You can install simfish from [GitHub](https://github.com/ianjonsen/simfish) with
 remotes::install_github("ianjonsen/simfish")
 ```
 
-## Example
-
-```{r load pkgs, message=FALSE}
+## Example 1 - simulate a fish track in a featureless environment
+```{r ex1 load pkgs, message=FALSE}
 require(simfish, quietly = TRUE)
-require(raster, quietly = TRUE)
 require(tidyverse, quietly = TRUE)
+```
+
+## Set up the simulation
+```{r ex1 setup simulation}
+## define simulation parameters
+
+my.par <- sim_par(
+  N = 250,  # number of simulation time steps
+  time.step = 60, # time step in minutes
+  coa = c(15, 30), # location of centre-of-attraction for biased correlated random walk (can be NA)
+  nu = 1, # strength of attraction to CoA (range: 0 - infinity)
+  rho = 0.6 # angular dispersion param for move directions (range 0 - 1)
+)
+```
+
+## Simulate a single track as a biased & correlated random walk
+```{r ex1 run simulation, eval=FALSE}
+## simulate a single track
+out <- sim_fish(id = 1, 
+                data = NULL, 
+                mpar = my.par)
+```
+
+```{r ex1 run simulation2, echo=FALSE}
+set.seed(300)
+
+out <- sim_fish(id = 1, 
+                data = NULL, 
+                mpar = my.par,
+                pb = FALSE) # turn off progress bar for tidy Rmd result
+```
+
+```{r ex1 plot simulated track}
+plot(out)
+```
+
+## Example 2 - simulate fish tracks in a semi-realistic environment
+```{r ex2 load pkgs, message=FALSE}
+require(raster, quietly = TRUE)
 require(sf, quietly = TRUE)
 require(stars, quietly = TRUE)
 ```
@@ -153,7 +190,7 @@ xy <- recLocs %>%
   st_coordinates() %>%
   as.data.frame()
 recLocs <- bind_cols(recLocs, xy) %>%
-  select(id = station_name, x = X, y = Y) %>%
+  dplyr::select(id = station_name, x = X, y = Y) %>%
   mutate(z = 1)
 
 ## add receiver locations to data
