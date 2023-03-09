@@ -15,7 +15,7 @@
 ##'
 ##' @return a raster defining the simulation environment
 ##'
-##' @importFrom raster raster extent rasterize projectExtent projectRaster
+##' @importFrom raster raster extent rasterize projectExtent projectRaster crs
 ##' @importFrom sf as_Spatial st_transform st_crop st_make_valid
 ##' @importFrom dplyr "%>%"
 ##' @importFrom rnaturalearth ne_countries
