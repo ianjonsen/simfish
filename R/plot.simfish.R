@@ -48,7 +48,7 @@ plot.simfish <- function(x,
       ylab(element_blank())
 
   } else {
-    x <- lapply(x$rep, function(.) .$sim) %>%
+    sims <- lapply(x$rep, function(.) .$sim) %>%
       bind_rows()
     coa <- lapply(x$rep, function(.) if(.$params$nu != 0) {
       data.frame(x = .$params$coa[1], y = .$params$coa[2])
@@ -57,7 +57,7 @@ plot.simfish <- function(x,
       }) %>%
       bind_rows()
 
-   p <- ggplot(x$sim)
+   p <- ggplot(data = sims)
 
    if(by.id) {
      p <- p + geom_path(aes(x,y, group = id, colour = id),
