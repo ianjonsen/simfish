@@ -62,13 +62,16 @@ map <- function(x,
     m <- m + geom_point(data = out$sim,
                         aes(x, y),
                         size = 0.1,
-                        colour = "orange") +
-      geom_point(data = out$detect,
+                        colour = "orange")
+
+    if("recLocs" %in% names(env)) {
+      m <- m + geom_point(data = out$detect,
                  aes(recv_x, recv_y),
                  shape = 19,
                  size = 3,
-                 colour = "hotpink") +
-      geom_point(data = with(out$params, data.frame(x = coa[1], y = coa[2])),
+                 colour = "hotpink")
+    }
+      m <- m + geom_point(data = with(out$params, data.frame(x = coa[1], y = coa[2])),
                  aes(x, y),
                  shape = 17,
                  size = 2,
@@ -86,12 +89,14 @@ map <- function(x,
                           size = 0.1,
                           colour = "orange")
     }
+    if("recLocs" %in% names(env)) {
       m <- m + geom_point(data = dets,
                  aes(recv_x, recv_y),
                  shape = 19,
                  size = 3,
-                 colour = "hotpink") +
-      geom_point(data = coa,
+                 colour = "hotpink")
+    }
+      m <- m + geom_point(data = coa,
                  aes(x, y),
                  shape = 17,
                  size = 2,
