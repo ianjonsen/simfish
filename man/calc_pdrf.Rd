@@ -32,7 +32,7 @@ p(detection). Default is NULL.}
 \item{dint}{plotting interval between distances. Ignored if plot = FALSE.}
 }
 \value{
-either the intercept or slope parameter, given \code{pdet}, \code{dist}, and
+the intercept and slope parameters, given \code{pdet}, \code{dist}, and
 one of \code{int} or \code{slope}.
 }
 \description{

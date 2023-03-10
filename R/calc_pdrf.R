@@ -17,7 +17,7 @@
 ##' @param dmax maximum distance to be plotted. Ignored if plot = FALSE.
 ##' @param dint plotting interval between distances. Ignored if plot = FALSE.
 ##'
-##' @return either the intercept or slope parameter, given `pdet`, `dist`, and
+##' @return the intercept and slope parameters, given `pdet`, `dist`, and
 ##' one of `int` or `slope`.
 ##'
 ##' @details The `int` default value (5) is based on empirical data collected from
