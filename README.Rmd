@@ -23,7 +23,7 @@ simulate fish tracks with/without acoustic detections in semi-realistic environm
 
 {simfish} is an R package that facilitates simulation of fish tracks in semi-realistic environments (coastal oceans, fjords, and lakes). A user-supplied raster defining the water body - land boundaries is used to constrain simulated tracks. Fish movements are simulated (currently) as either a correlated random walk or a biased & correlated random walk, with the bias toward a defined Centre-of-Attraction. A potential function is used to ensure the tracks avoid land. The package can also be used to simulate detections of acoustically-tagged fish by acoustic receivers at user-defined locations.
 
-## Installation
+# Installation
 
 You can install simfish from [GitHub](https://github.com/ianjonsen/simfish) with:
 
@@ -32,7 +32,7 @@ You can install simfish from [GitHub](https://github.com/ianjonsen/simfish) with
 remotes::install_github("ianjonsen/simfish")
 ```
 
-## Example 1 - simulate a fish track in a featureless environment
+# Example 1 - simulate a fish track in a featureless environment
 ```{r ex1 load pkgs, message=FALSE}
 require(simfish, quietly = TRUE)
 require(tidyverse, quietly = TRUE)
@@ -72,9 +72,9 @@ out <- sim_fish(id = 1,
 plot(out)
 ```
 
-## Example 2 - simulate fish tracks in a semi-realistic environment
+# Example 2 - simulate fish tracks in a semi-realistic environment
 ```{r ex2 load pkgs, message=FALSE}
-require(stars, quietly = TRUE)
+require(sf, quietly = TRUE)
 ```
 
 ## Create an environment to simulate fish movements
@@ -104,7 +104,7 @@ my.par <- sim_par(
   fl = 0.15, # fish fork length in m
   rho = 0.85, # angular dispersion param for move directions (range 0 - 1)
   bl = 2, # move speed (body-lengths per s)
-  beta = c(-2, -2), # potential function params; must be -ve to keep off land;
+  beta = c(-20, -20), # potential function params; must be -ve to keep off land;
   # larger -ve numbers will cause the track to jump (unrealistically) big distances when encountering land,
   # possibly crossing narrow land masses
   buffer = 0.5
@@ -122,7 +122,7 @@ out <- sim_fish(id = 1,
 ```{r run simulation2, echo=FALSE}
 ## specify random seed to ensure same track is simulated each time this .Rmd runs
 ##  DO NOT do this for 'real' applications!
-set.seed(300)
+set.seed(2*pi)
 
 ## simulate a single track
 out <- sim_fish(id = 1, 
@@ -154,7 +154,9 @@ x$recLocs <- recLocs
 ## simulate detections of a V13 acoustic tag
 ##   parameters (intercept, slope) from a logistic regression of distance on 
 ##   detection rate
-my.par$pdrf <- c(5, -0.01) 
+## use calc_pdrf to calculate slope for 50% detection rate at 500 m with an
+##  intercept of 5
+my.par$pdrf <- calc_pdrf(pdet = 0.5, dist = 500, int = 5)
 out <- out %>%
   sim_detect(data = x)
 

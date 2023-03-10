@@ -22,7 +22,7 @@ function is used to ensure the tracks avoid land. The package can also
 be used to simulate detections of acoustically-tagged fish by acoustic
 receivers at user-defined locations.
 
-## Installation
+# Installation
 
 You can install simfish from
 [GitHub](https://github.com/ianjonsen/simfish) with:
@@ -32,7 +32,7 @@ You can install simfish from
 remotes::install_github("ianjonsen/simfish")
 ```
 
-## Example 1 - simulate a fish track in a featureless environment
+# Example 1 - simulate a fish track in a featureless environment
 
 ``` r
 require(simfish, quietly = TRUE)
@@ -68,10 +68,10 @@ plot(out)
 
 <img src="man/figures/README-ex1 plot simulated track-1.png" width="100%" />
 
-## Example 2 - simulate fish tracks in a semi-realistic environment
+# Example 2 - simulate fish tracks in a semi-realistic environment
 
 ``` r
-require(stars, quietly = TRUE)
+require(sf, quietly = TRUE)
 ```
 
 ## Create an environment to simulate fish movements
@@ -103,7 +103,7 @@ my.par <- sim_par(
   fl = 0.15, # fish fork length in m
   rho = 0.85, # angular dispersion param for move directions (range 0 - 1)
   bl = 2, # move speed (body-lengths per s)
-  beta = c(-2, -2), # potential function params; must be -ve to keep off land;
+  beta = c(-20, -20), # potential function params; must be -ve to keep off land;
   # larger -ve numbers will cause the track to jump (unrealistically) big distances when encountering land,
   # possibly crossing narrow land masses
   buffer = 0.5
@@ -143,7 +143,9 @@ x$recLocs <- recLocs
 ## simulate detections of a V13 acoustic tag
 ##   parameters (intercept, slope) from a logistic regression of distance on 
 ##   detection rate
-my.par$pdrf <- c(5, -0.01) 
+## use calc_pdrf to calculate slope for 50% detection rate at 500 m with an
+##  intercept of 5
+my.par$pdrf <- calc_pdrf(pdet = 0.5, dist = 500, int = 5)
 out <- out %>%
   sim_detect(data = x)
 ```
