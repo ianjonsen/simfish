@@ -17,7 +17,14 @@ Cartesian grid (a featureless environment).}
 \item{pb}{- use progress bar (logical)}
 }
 \description{
-simulates fish tracks
+simulates fish tracks in featureless or semi-realistic
+environments. Semi-realistic environments are user-defined rasters of water
+bounded by land, which constrain the simulated tracks. User-supplied acoustic
+receiver locations can be used to simulate acoustic detections based on a
+user-defined detection probability with distance. Utility functions are
+provided to generate water-land rasters (`generate_land()`), required
+gradient rasters (`generate_grad()`), and to convert acoustic tag
+detection range expectations into logistic regression parameters (`calc_pdrf()`).
 }
 \examples{
 ## A minimal example - simulation with no environment
