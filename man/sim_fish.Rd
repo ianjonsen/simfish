@@ -9,7 +9,8 @@ sim_fish(id = 1, data = NULL, mpar = sim_par(), pb = TRUE)
 \arguments{
 \item{id}{- identifier for simulation run (individual fish)}
 
-\item{data}{- a list of required data}
+\item{data}{- a list of required data. If missing then simulation runs on a
+Cartesian grid (a featureless environment).}
 
 \item{mpar}{- simulation control parameters supplied as a list using `sim_par()`}
 
@@ -17,6 +18,24 @@ sim_fish(id = 1, data = NULL, mpar = sim_par(), pb = TRUE)
 }
 \description{
 simulates fish tracks
+}
+\examples{
+## A minimal example - simulation with no environment
+my.par <- sim_par(N = 1440, time.step = 5, start = c(0, 0), coa = c(0,30))
+
+out <- sim_fish(id = 1, mpar = my.par)
+
+plot(out)
+
+## Simulate in a semi-realistic environment
+land <- generate_env(ext = c(-70,43,-52,53), res = c(0.05,0.05))
+grad <- generate_grad(land)
+x <- list(land = land, grad = grad)
+
+my.par <- sim_par(N=400, time.step=60*6, start = c(-7260, 5930), coa = c(-6300,6680), nu = 0.6, rho = 0.7)
+out <- sim_fish(id = 1, data = x, mpar = my.par)
+
+map(out, env = x)
 }
 \author{
 Ian Jonsen \email{ian.jonsen@mq.edu.au}

@@ -51,7 +51,7 @@ sim_par <-
       bl = 2,
       fl = 0.15,
       pdrf = c(5, -0.02), # = p(0.5) @ 250 m  + < p(0.01) @ 500 m   [c(4.865, -0.0139)  (~ consistent w HFX line V9 @ high power)]
-      beta = c(-20, -20),
+      beta = c(-10, -10),
       buffer = 0.2,
       land = FALSE,
       boundary = FALSE
