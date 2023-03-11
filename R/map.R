@@ -59,7 +59,11 @@ map <- function(x,
   }
 
   if(is.null(nrow(x))) {
-    m <- m + geom_point(data = out$sim,
+    m <- m + geom_path(data = out$sim,
+                       aes(x, y),
+                       linewidth = 0.1,
+                       colour = "orange") +
+      geom_point(data = out$sim,
                         aes(x, y),
                         size = 0.1,
                         colour = "orange")

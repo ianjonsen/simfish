@@ -7,7 +7,37 @@
 sim_par(...)
 }
 \arguments{
-\item{...}{simulation control parameters}
+\item{N}{number of time steps to simulate}
+
+\item{time.step}{duration (min) of each simulation time step}
+
+\item{start.dt}{start datetime (POSIXct) of simulation}
+
+\item{start}{start location coordinates (grid x, y in km)}
+
+\item{coa}{Centre-of-Attraction coordinates (grid x, y in km)}
+
+\item{nu}{strength of attraction to CoA (range: 0 - infinity)}
+
+\item{rho}{angular dispersion parameter (Wrapped Cauchy) for turn angles}
+
+\item{bl}{move speed in body-lengths per second}
+
+\item{fl}{fish fork-length (m)}
+
+\item{pdrf}{logistic intercept & slope parameters defining detection
+probability as a function of distance between fish and receiver. Default values
+roughly correspond to detection range of V9 tags in the ocean.}
+
+\item{beta}{potential function parameters for x and y directions to
+keep fish off land. Larger -ve values result in stronger land avoidance but can
+introduce unrealistic jumps (possibly across narrow land features) in the track.}
+
+\item{buffer}{distance radius in km to search for water when simulation stuck
+on land. Smaller values reduce chance of unrealistic jumps away from land but
+can lead to simulations getting stuck on land. Larger values increase chance
+of unrealistic jumps (possibly across land) but reduce chance of simulations
+getting stuck on land.}
 }
 \value{
 Returns a list of simulation parameters to be used by \code{sim_fish}.
@@ -21,7 +51,7 @@ Define simulation parameters
 my.par <- sim_par(N = 1440, time.step = 5, start = c(0, 0), coa = c(0,30))
 
 out <- sim_fish(id = 1, mpar = my.par)
-plot(out)
 
+plot(out)
 
 }

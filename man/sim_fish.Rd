@@ -7,16 +7,16 @@
 sim_fish(id = 1, data = NULL, mpar = sim_par(), pb = TRUE)
 }
 \arguments{
-\item{id}{- identifier for simulation run (individual animal)}
+\item{id}{- identifier for simulation run (individual fish)}
 
-\item{data}{- a list of required data from `sim_setup()`}
+\item{data}{- a list of required data}
 
 \item{mpar}{- simulation control parameters supplied as a list using `sim_par()`}
 
 \item{pb}{- use progress bar (logical)}
 }
 \description{
-simulates fish tracks on a user-supplied raster depicting a water body
+simulates fish tracks
 }
 \author{
 Ian Jonsen \email{ian.jonsen@mq.edu.au}

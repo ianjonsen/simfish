@@ -3,8 +3,8 @@
 
 # simfish
 
-simulate fish tracks with/without acoustic detections in semi-realistic
-environments
+simulate fish tracks with/without acoustic detections in featureless and
+semi-realistic environments
 
 <!-- badges: start -->
 
@@ -77,7 +77,7 @@ require(sf, quietly = TRUE)
 ## Create an environment to simulate fish movements
 
 ``` r
-## create raster 
+## create raster using rnaturalearth hires polygon data
 land <- generate_env(ext = c(-70,43,-52,53), 
                      res = c(0.03,0.03)) 
 
@@ -94,19 +94,16 @@ x <- list(land = land,
 
 ## then parameterize the simulation
 my.par <- sim_par(
-  N = 70*24,  # number of simulation time steps (60 days x 24 h)
+  N = 90*24,  # number of simulation time steps (60 days x 24 h)
   start = c(-7260, 5930), # start location for simulated fish
-  start.dt = ISOdatetime(2023,03,01,12,00,00, tz="UTC"), # start date-time
   time.step = 60, # time step in minutes
+  bl = 3,
   coa = c(-6250, 6000), # location of centre-of-attraction for biased correlated random walk (can be NA)
-  nu = 0.4, # strength of attraction to CoA (range: 0 - infinity)
-  fl = 0.15, # fish fork length in m
-  rho = 0.85, # angular dispersion param for move directions (range 0 - 1)
-  bl = 2, # move speed (body-lengths per s)
-  beta = c(-20, -20), # potential function params; must be -ve to keep off land;
-  # larger -ve numbers will cause the track to jump (unrealistically) big distances when encountering land,
-  # possibly crossing narrow land masses
-  buffer = 0.5
+  nu = 0.7, # strength of attraction to CoA (range: 0 - infinity)
+  rho = 0.65, # angular dispersion param for move directions (range 0 - 1)
+  beta = c(-10,-10) # potential function parameters for x and y directions to 
+  # keep fish off land. Larger -ve values result in stronger land avoidance but can
+  # introduce unrealistic jumps (possibly across narrow land features) in the track.
 )
 ```
 
