@@ -15,6 +15,7 @@
 ##' @param data - a list of required data. If missing then simulation runs on a
 ##' Cartesian grid (a featureless environment).
 ##' @param mpar - simulation control parameters supplied as a list using `sim_par()`
+##' See `?sim_par` for details on the simulation parameters.
 ##' @param pb - use progress bar (logical)
 ##' @importFrom raster extract xyFromCell nlayers
 ##' @importFrom CircStats rwrpcauchy

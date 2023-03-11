@@ -12,7 +12,8 @@ sim_fish(id = 1, data = NULL, mpar = sim_par(), pb = TRUE)
 \item{data}{- a list of required data. If missing then simulation runs on a
 Cartesian grid (a featureless environment).}
 
-\item{mpar}{- simulation control parameters supplied as a list using `sim_par()`}
+\item{mpar}{- simulation control parameters supplied as a list using `sim_par()`
+See `?sim_par` for details on the simulation parameters.}
 
 \item{pb}{- use progress bar (logical)}
 }
