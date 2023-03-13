@@ -57,6 +57,9 @@ sim_fish <-
       if (class(data$grad)[1] != "RasterStack") stop("grad must be a RasterStack")
       if (class(data$grad)[1] == "RasterStack" & nlayers(data$grad) != 2)
         stop("grad must be a RasterStack with 2 layers")
+
+      if (length(grep("+units=km", data$land)) == 0)
+        stop("raster projection must have units in km")
     }
 
     N <- mpar$N
