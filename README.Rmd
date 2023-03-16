@@ -68,7 +68,7 @@ out <- sim_fish(id = 1,
                 pb = FALSE) # turn off progress bar for tidy Rmd result
 ```
 
-```{r ex1 plot simulated track}
+```{r ex1_plot}
 plot(out)
 ```
 
@@ -160,7 +160,7 @@ out <- out %>%
 ```
 
 ## Visualise simulated track & detections
-```{r map results}
+```{r map}
 simfish::map(out, env = x)
 ```
 

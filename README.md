@@ -66,7 +66,7 @@ out <- sim_fish(id = 1,
 plot(out)
 ```
 
-<img src="man/figures/README-ex1 plot simulated track-1.png" width="100%" />
+<img src="man/figures/README-ex1_plot-1.png" width="100%" />
 
 # Example 2 - simulate fish tracks in a semi-realistic environment
 
@@ -153,4 +153,4 @@ out <- out %>%
 simfish::map(out, env = x)
 ```
 
-<img src="man/figures/README-map results-1.png" width="100%" />
+<img src="man/figures/README-map-1.png" width="100%" />

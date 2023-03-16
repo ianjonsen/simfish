@@ -19,11 +19,12 @@
 ##' @param pb - use progress bar (logical)
 ##' @importFrom raster extract xyFromCell nlayers
 ##' @importFrom CircStats rwrpcauchy
-##' @importFrom dplyr %>% mutate lag select
+##' @importFrom dplyr "%>%" mutate lag select filter everything
 ##' @importFrom tibble as_tibble
 ##' @importFrom stats runif rbinom
 ##' @importFrom lubridate week yday
 ##' @importFrom stringr str_split
+##' @importFrom utils setTxtProgressBar txtProgressBar
 ##'
 ##' @examples
 ##' ## A minimal example - simulation with no environment
