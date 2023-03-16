@@ -9,6 +9,7 @@
 #' @param b - a vector of two parameters (intercept & slope) for logistic detection range function
 #' @param noise - range 0 - 1; simulate effect of noisy environment. Reduces detection prob w dist
 #' by specified proportion; default = 1, no reduction
+#' @importFrom dplyr rename "%>%" mutate select arrange
 #' @export
 #'
 pdet <- function(trs = NULL, rec = NULL, b = NULL, noise = 1){

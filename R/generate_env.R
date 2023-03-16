@@ -11,12 +11,12 @@
 ##' @param prj a crs string or EPSG defining the projection for the raster with
 ##' units in km. The default projection is a Mercator grid:
 ##' `prj = "+prj=merc +datum=WGS84 +units=km"`
-##' @param ... additional arguments to be ignored
 ##'
 ##' @return a raster defining the simulation environment
 ##'
 ##' @importFrom raster raster extent rasterize projectExtent projectRaster crs
-##' @importFrom sf as_Spatial st_transform st_crop st_make_valid
+##' @importFrom sf st_transform st_crop st_make_valid
+##' @importFrom methods as
 ##' @importFrom dplyr "%>%"
 ##' @importFrom rnaturalearth ne_countries
 ##'

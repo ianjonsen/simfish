@@ -4,7 +4,9 @@
 #'
 #' @author Ian Jonsen \email{ian.jonsen@mq.edu.au}
 #'
-#' @param s - a deadsmolt class list containing output from sim_setup and sim_smolt/sim_kelt
+#' @param s - a simfish class list containing output from sim_fish
+#' @param data -  a list containing required environmental data, including
+#' receiver locations with x,y,z coordinates, where z is receiver depth.
 #' @param delay - min & max time intervals (s) between transmissions
 #' @param burst - duration of each transmission (s)
 #' @param noise - range 0 - 1; simulate effect of noisy environment. Reduces detection prob w dist
@@ -29,50 +31,19 @@ sim_detect <-
     trans <- tmp.tr <- dt <- tmp.dt <- NULL
     b <- s$params$pdrf
 
-    if(exists("rec", data)) {
-      if (data$rec == "lines") {
-        yrec <- recLocs$y %>% unique()
 
-        in.rng <- lapply(1:length(yrec), function(i) {
-          which(abs(yrec[i] - s$sim[, "y"]) <= 1.5)
-        })
-        ## drop rec lines that smolt did not cross
-        in.rng <- in.rng[which(sapply(in.rng, length) > 0)]
-
-        ## simulate transmission
-        trans <- lapply(1:length(in.rng), function(i) {
-          path <- s$sim[in.rng[[i]], c("id", "date", "x", "y")]
-          path[, c("x", "y")] <- path[, c("x", "y")] * 1000
-          sim_transmit(path, delayRng = delay, burstDur = burst) #%>%
-          #          mutate(line = rep(paste0("l", i), nrow(.)))
-        }) %>%
-          do.call(rbind, .)
-
-      } else if (data$rec != "lines") {
-        sim_sf <- st_as_sf(s$sim, coords = c("x", "y"), crs = data$prj)
-        in.rng <- st_contains(data$recPoly, sim_sf)[[1]]
-        path <- s$sim[in.rng, c("id", "date", "x", "y")]
-        path[, c("x", "y")] <- path[, c("x", "y")] * 1000
-        if (length(in.rng >= 1)) {
-          trans <- sim_transmit(path, delayRng = delay, burstDur = burst)
-        } else {
-          trans <- NULL
-        }
+    if (!is.null(data$recPoly)) {
+      sim_sf <- st_as_sf(s$sim, coords = c("x", "y"), crs = data$prj)
+      in.rng <- st_contains(data$recPoly, sim_sf)[[1]]
+    } else {
+      in.rng <- rep(TRUE, nrow(s$sim))
     }
-    } else if(!exists("rec", data)) {
-      if(!is.null(data$recPoly)) {
-        sim_sf <- st_as_sf(s$sim, coords = c("x", "y"), crs = data$prj)
-        in.rng <- st_contains(data$recPoly, sim_sf)[[1]]
-      } else {
-        in.rng <- rep(TRUE, nrow(s$sim))
-      }
-      path <- s$sim[in.rng, c("id","date","x","y")]
-      path[, c("x","y")] <- path[, c("x","y")] * 1000
-      if(length(in.rng) >= 1) {
-        trans <- sim_transmit(path, delayRng = delay, burstDur = burst)
-      } else {
-        trans <- NULL
-      }
+    path <- s$sim[in.rng, c("id", "date", "x", "y")]
+    path[, c("x", "y")] <- path[, c("x", "y")] * 1000
+    if (length(in.rng) >= 1) {
+      trans <- sim_transmit(path, delayRng = delay, burstDur = burst)
+    } else {
+      trans <- NULL
     }
 
     ## define logistic detection range (m) function

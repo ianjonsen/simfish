@@ -20,8 +20,6 @@ yield higher resolution but longer computation times.}
 \item{prj}{a crs string or EPSG defining the projection for the raster with
 units in km. The default projection is a Mercator grid:
 \code{prj = "+prj=merc +datum=WGS84 +units=km"}}
-
-\item{...}{additional arguments to be ignored}
 }
 \value{
 a raster defining the simulation environment

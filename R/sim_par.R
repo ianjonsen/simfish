@@ -2,26 +2,30 @@
 ##'
 ##' @description Define simulation parameters
 ##'
-##' @param N number of time steps to simulate
-##' @param time.step duration (min) of each simulation time step
-##' @param start.dt start datetime (POSIXct) of simulation
-##' @param start start location coordinates (grid x, y in km)
-##' @param coa Centre-of-Attraction coordinates (grid x, y in km)
-##' @param nu strength of attraction to CoA (range: 0 - infinity)
-##' @param rho angular dispersion parameter (Wrapped Cauchy) for turn angles
-##' @param bl move speed in body-lengths per second
-##' @param fl fish fork-length (m)
-##' @param pdrf logistic intercept & slope parameters defining detection
+##' @param ... simulation parameters:
+##' `N` - number of time steps to simulate;
+##' `time.step` - duration (min) of each simulation time step;
+##' `start.dt` - start datetime (POSIXct) of simulation;
+##' `start` - start location coordinates (grid x, y in km);
+##' `coa` - Centre-of-Attraction coordinates (grid x, y in km);
+##' `nu` - strength of attraction to CoA (range: 0 - infinity);
+##' `rho` - angular dispersion parameter (Wrapped Cauchy) for turn angles;
+##' `bl` - move speed in body-lengths per second;
+##' `fl` - fish fork-length (m);
+##' `pdrf` - logistic intercept & slope parameters defining detection
 ##' probability as a function of distance between fish and receiver. Default values
-##' roughly correspond to detection range of V9 tags in the ocean.
-##' @param beta potential function parameters for x and y directions to
+##' roughly correspond to detection range of V9 tags in the ocean;
+##'
+##' `beta` - potential function parameters for x and y directions to
 ##' keep fish off land. Larger -ve values result in stronger land avoidance but can
-##' introduce unrealistic jumps (possibly across narrow land features) in the track.
-##' @param buffer distance radius in km to search for water when simulation stuck
+##' introduce unrealistic jumps (possibly across narrow land features) in the track;
+##'
+##' `buffer` - distance radius in km to search for water when simulation stuck
 ##' on land. Smaller values reduce chance of unrealistic jumps away from land but
 ##' can lead to simulations getting stuck on land. Larger values increase chance
 ##' of unrealistic jumps (possibly across land) but reduce chance of simulations
 ##' getting stuck on land.
+##'
 ##' @return Returns a list of simulation parameters to be used by \code{sim_fish}.
 ##' See example, below
 ##'

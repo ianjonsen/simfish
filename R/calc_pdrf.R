@@ -25,6 +25,7 @@
 ##' (https://members.oceantrack.org/OTN/project?ccode=HFX).
 ##'
 ##' @importFrom stats qlogis
+##' @importFrom graphics abline
 ##'
 ##' @examples
 ##' # calculate slope
@@ -48,7 +49,7 @@ calc_pdrf <- function(pdet = NULL,
 
   if(all(is.null(int), is.null(slope))) stop("Must specify one of either int or slope.")
   if(any(is.null(pdet), is.null(dist))) stop("pdet and dist must be specified.")
-  message("intercept & slope parameters: ")
+  #message("intercept & slope parameters: ")
   if(all(!is.null(pdet), !is.null(dist), !is.null(int), is.null(slope))) {
     pars <- c(int, (qlogis(pdet) - int) / dist)
 

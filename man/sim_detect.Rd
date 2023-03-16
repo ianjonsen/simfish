@@ -7,7 +7,10 @@
 sim_detect(s, data, delay = c(50, 130), burst = 5, noise = 1)
 }
 \arguments{
-\item{s}{- a deadsmolt class list containing output from sim_setup and sim_smolt/sim_kelt}
+\item{s}{- a simfish class list containing output from sim_fish}
+
+\item{data}{-  a list containing required environmental data, including
+receiver locations with x,y,z coordinates, where z is receiver depth.}
 
 \item{delay}{- min & max time intervals (s) between transmissions}
 
