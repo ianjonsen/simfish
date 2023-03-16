@@ -33,26 +33,38 @@ generate_env <- function(ext = NULL,
 
   if(is.null(ext)) stop("Extents in long,lat must be provided.")
 
-  env <- suppressWarnings(rnaturalearth::ne_countries(scale = 10, returnclass = "sf") %>%
-    sf::st_transform(crs = 4326) %>%
-    sf::st_crop(xmin=ext[1], ymin=ext[2], xmax=ext[3], ymax=ext[4]) %>%
-    sf::st_make_valid())
+  if (requireNamespace("rnaturalearthhires", quietly = TRUE)) {
+    env <- ne_countries(scale = 10, returnclass = "sf")
+  } else {
+    message("using medium resolution data; install 'rnaturalearthhires' pkg for highest resolution data")
+    env <- ne_countries(scale = 50, returnclass = "sf")
+  }
+
+  env <- suppressWarnings(env %>%
+    st_crop(
+      xmin = ext[1],
+      ymin = ext[2],
+      xmax = ext[3],
+      ymax = ext[4]
+    ) %>%
+    st_make_valid()
+  )
 
   ## rasterise
   env <- as(env, "Spatial")
 
   ## rasterize at a high resolution for a pretty map
   ##  a lower resolution will run faster
-  env <- raster::raster(crs = crs(env),
+  env <- raster(crs = crs(env),
                          vals = 1,
                          resolution = res,
                          ext = extent(c(ext[1], ext[3], ext[2], ext[4]))) %>%
-    raster::rasterize(env, .)
+    rasterize(env, .)
 
   ## reproject to Mercator grid in km
   ## in principle, any projection will work as long as the units are in km
-  ext <- raster::projectExtent(env, crs = prj)
-  env <- raster::projectRaster(env, ext)
+  ext <- projectExtent(env, crs = prj)
+  env <- projectRaster(env, ext)
   env[env > 1] <- 1
 
   return(env)

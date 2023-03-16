@@ -11,15 +11,11 @@
 ##'
 ##' @return a ggplot object
 ##'
-##' @importFrom ggplot2 ggplot geom_path geom_point aes theme_dark coord_fixed
+##' @importFrom ggplot2 ggplot geom_path geom_point aes theme_minimal coord_sf
+##' @importFrom ggplot2 labs theme scale_colour_brewer
 ##' @importFrom dplyr "%>%" bind_rows
 ##' @importFrom stars st_as_stars geom_stars
 ##'
-##' @examples
-##' my.par <- sim_par(N = 1440, time.step = 5, start = c(0, 0), coa = c(0,30))
-##'
-##' out <- sim_fish(id = 1, mpar = my.par)
-##' map(out)
 ##'
 ##' @export
 ##' @md

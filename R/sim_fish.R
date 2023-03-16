@@ -29,7 +29,7 @@
 ##' ## A minimal example - simulation with no environment
 ##' my.par <- sim_par(N = 1440, time.step = 5, start = c(0, 0), coa = c(0,30))
 ##'
-##' out <- sim_fish(id = 1, mpar = my.par)
+##' out <- sim_fish(id = 1, mpar = my.par, pb = FALSE)
 ##'
 ##' plot(out)
 ##'
@@ -38,8 +38,9 @@
 ##' grad <- generate_grad(land)
 ##' x <- list(land = land, grad = grad)
 ##'
-##' my.par <- sim_par(N=400, time.step=60*6, start = c(-7260, 5930), coa = c(-6300,6680), nu = 0.6, rho = 0.7)
-##' out <- sim_fish(id = 1, data = x, mpar = my.par)
+##' my.par <- sim_par(N=400, time.step=60*6, start = c(-7260, 5930),
+##' coa = c(-6300,6680), nu = 0.6, rho = 0.7)
+##' out <- sim_fish(id = 1, data = x, mpar = my.par, pb = FALSE)
 ##'
 ##' map(out, env = x)
 ##' @export

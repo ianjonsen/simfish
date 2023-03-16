@@ -20,7 +20,7 @@ move_kernel <- function(data, xy = NULL, mpar, s) {
     phi <- atan2(sin(xy[3]), cos(xy[3]))
   }
 
-  ## fixed rho gives strength of bias to the CoA
+  ## fixed rho determines degree of correlation in movements
   mu <- rwrpcauchy(1, phi, mpar$rho)
 
   new.xy <- cbind(xy[1] + sin(mu) * s, xy[2] + cos(mu) * s)
@@ -32,7 +32,7 @@ move_kernel <- function(data, xy = NULL, mpar, s) {
 
     new2.xy <- new.xy + pv * mpar$beta
 
-    ## if provision new.xy is on land then try again
+    ## if provisional new.xy is on land then try again
     if (!is.na(extract(data$land, rbind(new2.xy)))) {
       pv <- c(extract(data$grad[[1]], new2.xy)[1],
               extract(data$grad[[2]], new2.xy)[1])

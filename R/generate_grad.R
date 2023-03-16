@@ -28,9 +28,9 @@ generate_grad <- function(x) {
   x[x == -1] <- 1
 
   ## calculate gradient rasters - these are needed to keep fish off land
-  dist <- raster::distance(x)
-  grad <- ctmcmove::rast.grad(dist)
-  grad <- raster::stack(grad$rast.grad.x, grad$rast.grad.y)
+  dist <- distance(x)
+  grad <- rast.grad(dist)
+  grad <- stack(grad$rast.grad.x, grad$rast.grad.y)
 
   return(grad)
 }

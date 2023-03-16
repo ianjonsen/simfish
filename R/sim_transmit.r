@@ -29,12 +29,6 @@
 #'
 #' @author C. Holbrook \email{cholbrook@usgs.gov}
 #'
-#' @examples
-#' mypath <- data.frame(x=seq(0,1000,100),y=seq(0,1000,100))
-#' mytrns <- transmit_along_path(mypath,vel=0.5,delayRng=c(60,180),burstDur=5.0)
-#' plot(mypath,type="b")
-#' points(mytrns,pch=20,col="red")
-#'
 #' @importFrom stats runif approx
 #' @keywords internal
 
