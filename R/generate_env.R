@@ -64,8 +64,7 @@ generate_env <- function(ext = NULL,
   env[env > 1] <- 1
 
   if(grad) {
-    grad <- generate_grad(env)
-    return(list(env = env, grad = grad))
+    return(list(land = env, grad = generate_grad(env)))
   } else {
     return(env)
   }
