@@ -19,8 +19,8 @@
 ##' @examples
 ##' my.par <- sim_par(N = 1440, time.step = 5, start = c(0, 0), coa = c(0,30))
 ##'
-##' out <- sim_fish(id = 1, mpar = my.par, pb = FALSE)
-##' plot(out)
+##' z <- sim_fish(id = 1, mpar = my.par)
+##' plot(z)
 ##'
 ##' @export
 ##' @md
@@ -37,12 +37,20 @@ plot.simfish <- function(x,
       geom_point(aes(x,y),
                  size = 0.75,
                  colour = "orange")
-    if(x$params$nu != 0) {
+    if(x$params$nu != 0 & is.null(dim(x$params$coa))) {
       p <- p + geom_point(data = with(x$params, data.frame(x=coa[1], y=coa[2])),
                      aes(x,y),
                      shape = 17,
                      size = 2,
                      colour = "dodgerblue")
+    } else if (x$params$nu != 0 & !is.null(dim(x$params$coa))) {
+      xx <- as.data.frame(x$params$coa)
+      names(xx) <- c("x", "y")
+      p <- p + geom_point(data = xx,
+                          aes(x, y),
+                          shape = 17,
+                          size = 2,
+                          colour = "dodgerblue")
     }
       p <- p + theme_dark() +
       coord_fixed() +

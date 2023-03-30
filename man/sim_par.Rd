@@ -8,11 +8,15 @@ sim_par(...)
 }
 \arguments{
 \item{...}{simulation parameters:
-`N` - number of time steps to simulate;
+`N` - number of time steps to simulate, if NULL then simulation runs until
+fish reaches the tolerance distance to Centre-of-Attraction (`coa.tol`);
 `time.step` - duration (min) of each simulation time step;
 `start.dt` - start datetime (POSIXct) of simulation;
 `start` - start location coordinates (grid x, y in km);
-`coa` - Centre-of-Attraction coordinates (grid x, y in km);
+`coa` - Centre-of-Attraction coordinates (grid x, y in km). If > 1 coa
+supplied (as a list) then track is assumed to move toward the coa's
+sequentially;
+`coa.tol` - tolerance distance (km) around CoA to define simulation stopping rule;
 `nu` - strength of attraction to CoA (range: 0 - infinity);
 `rho` - angular dispersion parameter (Wrapped Cauchy) for turn angles;
 `bl` - move speed in body-lengths per second;
@@ -42,8 +46,9 @@ Define simulation parameters
 ## A minimal example - simulation with no environment
 my.par <- sim_par(N = 1440, time.step = 5, start = c(0, 0), coa = c(0,30))
 
-out <- sim_fish(id = 1, mpar = my.par)
+z <- sim_fish(id = 1, mpar = my.par)
 
-plot(out)
+plot(z)
+
 
 }

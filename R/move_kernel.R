@@ -29,6 +29,7 @@ move_kernel <- function(data, xy = NULL, mpar, s) {
     ## calculate potential fn values
     pv <- c(extract(data$grad[[1]], new.xy)[1],
             extract(data$grad[[2]], new.xy)[1])
+    if(any(is.na(pv))) pv <- rbind(c(0,0))
 
     new2.xy <- new.xy + pv * mpar$beta
 
@@ -36,18 +37,24 @@ move_kernel <- function(data, xy = NULL, mpar, s) {
     if (!is.na(extract(data$land, rbind(new2.xy)))) {
       pv <- c(extract(data$grad[[1]], new2.xy)[1],
               extract(data$grad[[2]], new2.xy)[1])
-      new3.xy <- new.xy + pv * (mpar$beta * 3)
-      ## if still on land then move back to water
+      if(any(is.na(pv))) pv <- rbind(c(0,0))
+
+      new3.xy <- new.xy + pv * (mpar$beta * 2)
+
+      ## if still on land then try moving back to water
       if (!is.na(extract(data$land, new3.xy))) {
+
         ## find all nearby cells within mpar$buffer km & select the first one in water
         cells <-
-          extract(
+          try(extract(
             data$land,
             rbind(new.xy),
             buffer = mpar$buffer,
             cellnumbers = TRUE,
             df = TRUE
-          )
+          ), silent = TRUE)
+        if(inherits(cells, "try-error")) stop("can't move fish off land, try more -ve mpar$beta values or increasing mpar$buffer distance")
+
         idx <- which(is.na(cells[, 3]))[1]
         cell.water <- cells[idx, 2]
         new.xy <- xyFromCell(data$land, cell.water) %>% rbind()

@@ -9,30 +9,27 @@
 ##' gradient rasters (`generate_grad()`), and to convert acoustic tag
 ##' detection range expectations into logistic regression parameters (`calc_pdrf()`).
 ##'
-##' @author Ian Jonsen \email{ian.jonsen@mq.edu.au}
-##'
 ##' @param id - identifier for simulation run (individual fish)
 ##' @param data - a list of required data. If missing then simulation runs on a
 ##' Cartesian grid (a featureless environment).
 ##' @param mpar - simulation control parameters supplied as a list using `sim_par()`
 ##' See `?sim_par` for details on the simulation parameters.
-##' @param pb - use progress bar (logical)
-##' @importFrom raster extract xyFromCell nlayers
+##' @param ... additional, optional arguments to `find_route()`
+##' @importFrom raster extract xyFromCell nlayers crs
 ##' @importFrom CircStats rwrpcauchy
 ##' @importFrom dplyr "%>%" mutate lag select filter everything
 ##' @importFrom tibble as_tibble
 ##' @importFrom stats runif rbinom
 ##' @importFrom lubridate week yday
 ##' @importFrom stringr str_split
-##' @importFrom utils setTxtProgressBar txtProgressBar
 ##'
 ##' @examples
 ##' ## A minimal example - simulation with no environment
 ##' my.par <- sim_par(N = 1440, time.step = 5, start = c(0, 0), coa = c(0,30))
 ##'
-##' out <- sim_fish(id = 1, mpar = my.par, pb = FALSE)
+##' z <- sim_fish(id = 1, mpar = my.par)
 ##'
-##' plot(out)
+##' plot(z)
 ##'
 ##' ## Simulate in a semi-realistic environment
 ##' land <- generate_env(ext = c(-70,43,-52,53), res = c(0.05,0.05))
@@ -40,19 +37,18 @@
 ##' x <- list(land = land, grad = grad)
 ##'
 ##' my.par <- sim_par(N=400, time.step=60*6, start = c(-7260, 5930),
-##' coa = c(-6300,6680), nu = 0.6, rho = 0.7)
-##' out <- sim_fish(id = 1, data = x, mpar = my.par, pb = FALSE)
+##' coa = c(-6300, 6680), nu = 0.6, rho = 0.7)
+##' z <- sim_fish(id = 1, data = x, mpar = my.par)
 ##'
-##' map(out, env = x)
+##' map(z, env = x)
 ##' @export
 
 sim_fish <-
   function(id=1,
            data = NULL,
            mpar = sim_par(),
-           pb = TRUE
+           ...
   ) {
-
 
     if (!is.null(data)) {
       if (class(data$land)[1] != "RasterLayer") stop("land must be a RasterLayer")
@@ -62,53 +58,70 @@ sim_fish <-
 
       if (length(grep("+units=km", data$land)) == 0)
         stop("raster projection must have units in km")
+      if (length(grep("prj", names(data$prj))) == 0) {
+        data$prj <- crs(data$land)
+      }
     }
 
-    N <- mpar$N
+    if(is.null(dim(mpar$coa)[1]) & !is.null(data)) {
+      ## check for barriers between start and coa & reroute via intermediate CoA's
+      preroute <- FALSE
+      fr.list <- find_route(data, mpar, ...)
 
+      if(!is.null(dim(fr.list[[1]])) & is.null(mpar$N)) {
+        mpar$N <- 10000
+        mpar$coa <- fr.list[[1]]
+      }
+    } else if(!is.null(dim(mpar$coa)[1]) & !is.null(data)) {
+      preroute <- TRUE
+      mpar$N <- 10000
+    } else if (is.null(data)) {
+      preroute <- TRUE
+    }
+
+    cat("simulating track...\n")
     ## define location matrix & initialise start position
     ## xy[, 1:2] - location coordinates
     ## xy[, 3] - mean turn angle
-    xy <- matrix(NA, N, 3)
+    xy <- matrix(NA, mpar$N, 3)
     xy[1, 1:2] <- cbind(mpar$start)
     xy[1, 3] <- 0
 
-    s <- mpar$fl/1000 * mpar$bl * 60 * mpar$time.step # convert from m/s to km/min * mpar$time.step
+    ## define step length based on forklength (fl), swim speed in body-lengths/s,
+    ##  and time.step. Convert from m/s to km/min * mpar$time.step
+    s <- mpar$fl/1000 * mpar$bl * 60 * mpar$time.step
 
-    ## iterate movement
-    for (i in 2:N) {
-      if(i==2 && pb)  tpb <- txtProgressBar(min = 2, max = N, style = 3)
+    ## call simulation fn
+    if(!inherits(mpar$coa, "matrix")) {
+      ## single CoA
+      tmp <- simf(data, mpar, s, xy)
+      xy <- tmp$xy
+      mpar <- tmp$mpar
+    } else {
+      ## multiple CoA to get around land masses
+      coas <- mpar$coa
+      tmp <- list()
+      for (i in 1:nrow(mpar$coa)) {
+        if(i == 1) {
+          mpar$coa <- coas[1,]
+          tmp[[1]] <- simf(data, mpar, s, xy, coas = TRUE)
 
-      ## Movement kernel
-      xy[i, ] <- move_kernel(data,
-                         xy = xy[i-1, ],
-                         mpar = mpar,
-                         s)
-
-      if (!is.null(data$land)) {
-        if (!is.na(extract(data$land, rbind(xy[i, 1:2]))) &
-            any(!is.na(xy[i, 1:2]))) {
-          mpar$land <- TRUE
-          cat("\n stopping simulation: stuck on land")
-          break
-        }
-
-        if (any(is.na(xy[i, 1:2]))) {
-          mpar$boundary <- TRUE
-          cat("\n stopping simulation: hit a boundary")
-          break
+        } else {
+          mpar$coa <- coas[i,]
+          #if(i == nrow(coas)) mpar$coa.tol <- 0
+          tmp[[i]] <- simf(data, mpar, s, tmp[[i-1]]$xy, coas = TRUE)
         }
       }
 
-      if(pb){
-        setTxtProgressBar(tpb, i)
-        if(i==N) close(tpb)
-      }
-    #print(i)
+      xy <- tmp[[length(tmp)]]$xy
+      mpar <- tmp[[length(tmp)]]$mpar
+      mpar$coa <- coas
+      mpar$N <- nrow(xy)
     }
 
-    N <- ifelse(!is.na(which(is.na(xy[,1]))[1] - 1), which(is.na(xy[,1]))[1] - 1, N)
+    N <- ifelse(!is.na(which(is.na(xy[,1]))[1] - 1), which(is.na(xy[,1]))[1] - 1, mpar$N)
 
+    ## process sim results
     X <-
       data.frame(
         x = xy[, 1],
@@ -135,7 +148,12 @@ sim_fish <-
       dplyr::select(id, date, everything())
 
     param <- mpar
-    out <- list(sim = sim, params = param)
+    if(preroute) {
+      out <- list(sim = sim, params = param)
+    } else {
+      out <- list(sim = sim, params = param, fr.coas = fr.list[[1]], fr.map = fr.list[[2]])
+    }
+
     class(out) <- "simfish"
 
     return(out)

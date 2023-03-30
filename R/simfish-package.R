@@ -41,4 +41,4 @@ NULL
 ## stop R CMD check generating NOTES about global variables
 globalVariables(c(".", "x", "y", "x.1", "y.1", "out", "recv_x", "recv_y", "id",
                   "id.1", "z", "trns_x", "trns_y", "trns_id", "recv_id",
-                  "recv_z"))
+                  "recv_z", "X", "Y"))

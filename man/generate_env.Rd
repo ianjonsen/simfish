@@ -7,7 +7,9 @@
 generate_env(
   ext = NULL,
   res = c(0.05, 0.05),
-  prj = "+proj=merc +datum=WGS84 +units=km"
+  prj = "+proj=merc +datum=WGS84 +units=km",
+  grad = FALSE,
+  dist = 0
 )
 }
 \arguments{
@@ -19,10 +21,21 @@ yield higher resolution but longer computation times.}
 
 \item{prj}{a crs string or EPSG defining the projection for the raster with
 units in km. The default projection is a Mercator grid:
-\code{prj = "+prj=merc +datum=WGS84 +units=km"}}
+\code{prj = "+prj=merc +datum=WGS84 +units=km"}.}
+
+\item{grad}{(logical) generate gradient rasters.
+The gradient rasters (gradient of distance from water in x and y directions)
+are required by the potential function used to simulate tracks.}
+
+\item{dist}{buffer distance (km) to add to land. This can be used when
+generating the gradient rasters to keep tracks a specified distance from land.
+The default is 0 km, no buffer.}
 }
 \value{
-a raster defining the simulation environment
+a raster defining the simulation environment (i.e., ocean with
+land barriers). Optionally, the gradient rasters, required for the simulation
+potential function, can also be generated. Only one of the environment raster
+or the gradient rasters can be returned.
 }
 \description{
 create environmental raster to constraint simulated tracks
@@ -30,7 +43,7 @@ create environmental raster to constraint simulated tracks
 \examples{
 x <- generate_env(ext = c(-70,43,-52,53), res = c(0.04,0.04))
 
-raster::plot(x, zlim = c(0,1))
+raster::plot(x)
 
 }
 \author{

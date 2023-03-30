@@ -10,48 +10,43 @@
 ##' yield higher resolution but longer computation times.
 ##' @param prj a crs string or EPSG defining the projection for the raster with
 ##' units in km. The default projection is a Mercator grid:
-##' `prj = "+prj=merc +datum=WGS84 +units=km"`
+##' `prj = "+prj=merc +datum=WGS84 +units=km"`.
+##' @param grad (logical) generate gradient rasters.
+##' The gradient rasters (gradient of distance from water in x and y directions)
+##' are required by the potential function used to simulate tracks.
+##' @param dist buffer distance (km) to add to land. This can be used when
+##' generating the gradient rasters to keep tracks a specified distance from land.
+##' The default is 0 km, no buffer.
 ##'
-##' @return a raster defining the simulation environment
+##' @return a raster defining the simulation environment (i.e., ocean with
+##' land barriers). Optionally, the gradient rasters, required for the simulation
+##' potential function, can also be generated. Only one of the environment raster
+##' or the gradient rasters can be returned.
 ##'
 ##' @importFrom raster raster extent rasterize projectExtent projectRaster crs
-##' @importFrom sf st_transform st_crop st_make_valid
+##' @importFrom sf st_transform st_crop st_make_valid st_buffer
 ##' @importFrom methods as
-##' @importFrom dplyr "%>%"
+##' @importFrom dplyr "%>%" summarise
 ##' @importFrom rnaturalearth ne_countries
 ##'
 ##' @examples
 ##' x <- generate_env(ext = c(-70,43,-52,53), res = c(0.04,0.04))
 ##'
-##' raster::plot(x, zlim = c(0,1))
+##' raster::plot(x)
 ##'
 ##' @export
 ##' @md
 generate_env <- function(ext = NULL,
                          res = c(0.05, 0.05),
-                         prj = "+proj=merc +datum=WGS84 +units=km") {
+                         prj = "+proj=merc +datum=WGS84 +units=km",
+                         grad = FALSE,
+                         dist = 0) {
 
-  if(is.null(ext)) stop("Extents in long,lat must be provided.")
-
-  if (requireNamespace("rnaturalearthhires", quietly = TRUE)) {
-    env <- ne_countries(scale = 10, returnclass = "sf")
-  } else {
-    message("using medium resolution data; install 'rnaturalearthhires' pkg for highest resolution data")
-    env <- ne_countries(scale = 50, returnclass = "sf")
-  }
-
-  env <- suppressWarnings(env %>%
-    st_crop(
-      xmin = ext[1],
-      ymin = ext[2],
-      xmax = ext[3],
-      ymax = ext[4]
-    ) %>%
-    st_make_valid()
-  )
+  env.sf <- gen_land_sf(ext = ext,
+                        dist = dist)
 
   ## rasterise
-  env <- as(env, "Spatial")
+  env <- as(env.sf, "Spatial")
 
   ## rasterize at a high resolution for a pretty map
   ##  a lower resolution will run faster
@@ -65,8 +60,15 @@ generate_env <- function(ext = NULL,
   ## in principle, any projection will work as long as the units are in km
   ext <- projectExtent(env, crs = prj)
   env <- projectRaster(env, ext)
+  env[env < 1] <- 1
   env[env > 1] <- 1
 
-  return(env)
+  if(grad) {
+    grad <- generate_grad(env)
+    return(list(env = env, grad = grad))
+  } else {
+    return(env)
+  }
+
 
 }

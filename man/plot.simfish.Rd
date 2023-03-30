@@ -22,8 +22,8 @@ a simple visualization of single or multiple simulated tracks
 \examples{
 my.par <- sim_par(N = 1440, time.step = 5, start = c(0, 0), coa = c(0,30))
 
-out <- sim_fish(id = 1, mpar = my.par, pb = FALSE)
-plot(out)
+z <- sim_fish(id = 1, mpar = my.par)
+plot(z)
 
 }
 \author{

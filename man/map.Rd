@@ -4,14 +4,31 @@
 \alias{map}
 \title{map}
 \usage{
-map(x, env = NULL, by.id = FALSE, ...)
+map(
+  x,
+  env = NULL,
+  by.id = FALSE,
+  coas = FALSE,
+  term.pts = TRUE,
+  zoom = TRUE,
+  ...
+)
 }
 \arguments{
 \item{x}{a simfish simulation object}
 
 \item{env}{...}
 
-\item{by.id}{logical (default: FALSE); if x is a multi-track object then colour tracks by id}
+\item{by.id}{logical (default: FALSE); if x is a multi-track object then
+colour tracks by id}
+
+\item{coas}{logical (default: FALSE); should CoA's be displayed on map}
+
+\item{term.pts}{logical (default: TRUE); should terminal (start, end) points
+be displayed on map}
+
+\item{zoom}{logical (default: TRUE); should map be zoomed to extent of
+simulated track, otherwise map uses extents from the land raster in \code{env}}
 
 \item{...}{additional arguments to be ignored}
 }

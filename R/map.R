@@ -6,7 +6,13 @@
 ##'
 ##' @param x a simfish simulation object
 ##' @param env ...
-##' @param by.id logical (default: FALSE); if x is a multi-track object then colour tracks by id
+##' @param by.id logical (default: FALSE); if x is a multi-track object then
+##' colour tracks by id
+##' @param coas logical (default: FALSE); should CoA's be displayed on map
+##' @param term.pts logical (default: TRUE); should terminal (start, end) points
+##' be displayed on map
+##' @param zoom logical (default: TRUE); should map be zoomed to extent of
+##' simulated track, otherwise map uses extents from the land raster in `env`
 ##' @param ... additional arguments to be ignored
 ##'
 ##' @return a ggplot object
@@ -23,6 +29,9 @@
 map <- function(x,
                 env = NULL,
                 by.id = FALSE,
+                coas = FALSE,
+                term.pts = TRUE,
+                zoom = TRUE,
                 ...) {
   if(is.null(env)) stop("a raster defining the simulation environment must be supplied")
 
@@ -55,27 +64,62 @@ map <- function(x,
   }
 
   if(is.null(nrow(x))) {
-    m <- m + geom_path(data = out$sim,
+    m <- m + geom_path(data = x$sim,
                        aes(x, y),
                        linewidth = 0.1,
                        colour = "orange") +
-      geom_point(data = out$sim,
+      geom_point(data = x$sim,
                         aes(x, y),
                         size = 0.1,
                         colour = "orange")
 
     if("recLocs" %in% names(env)) {
-      m <- m + geom_point(data = out$detect,
+      m <- m + geom_point(data = x$detect,
                  aes(recv_x, recv_y),
                  shape = 19,
                  size = 3,
                  colour = "hotpink")
     }
-      m <- m + geom_point(data = with(out$params, data.frame(x = coa[1], y = coa[2])),
-                 aes(x, y),
-                 shape = 17,
-                 size = 2,
-                 colour = "dodgerblue")
+
+    if (coas) {
+      if (is.null(dim(x$params$coa))) {
+        m <-
+          m + geom_point(
+            data = with(x$params, data.frame(x = coa[1], y = coa[2])),
+            aes(x, y),
+            shape = 17,
+            size = 2,
+            colour = "dodgerblue"
+          )
+      } else {
+        xx <- as.data.frame(x$params$coa)
+        names(xx) <- c("x", "y")
+        m <- m + geom_point(
+          data = xx,
+          aes(x, y),
+          shape = 17,
+          size = 2,
+          colour = "dodgerblue"
+        )
+      }
+    }
+    if(term.pts) {
+      m <-
+        m + geom_point(
+          data = with(x$params, data.frame(x = start[1], y = start[2])),
+          aes(x, y),
+          shape = 17,
+          size = 2,
+          colour = "dodgerblue"
+        ) +
+        geom_point(
+          data = x$sim[nrow(x$sim), ],
+          aes(x, y),
+          shape = 15,
+          size = 2,
+          colour = "firebrick"
+        )
+    }
 
   } else {
     if(by.id) {
@@ -105,8 +149,17 @@ map <- function(x,
     m <- m + theme_minimal() +
     theme(legend.position = "none") +
     labs(x = element_blank(),
-         y = element_blank()) +
-    coord_sf(expand = FALSE)
+         y = element_blank())
+
+    if(zoom) {
+      m <- m + coord_sf(
+        expand = FALSE,
+        xlim = extendrange(x$sim$x, f= 0.2),
+        ylim = extendrange(x$sim$y, f= 0.2)
+      )
+    } else {
+      m <- m + coord_sf(expand = FALSE)
+    }
 
     return(m)
 
