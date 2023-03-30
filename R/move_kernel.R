@@ -53,11 +53,14 @@ move_kernel <- function(data, xy = NULL, mpar, s) {
             cellnumbers = TRUE,
             df = TRUE
           ), silent = TRUE)
-        if(inherits(cells, "try-error")) stop("can't move fish off land, try more -ve mpar$beta values or increasing mpar$buffer distance")
-
-        idx <- which(is.na(cells[, 3]))[1]
-        cell.water <- cells[idx, 2]
-        new.xy <- xyFromCell(data$land, cell.water) %>% rbind()
+        if(inherits(cells, "try-error")) {
+          #stop("can't move fish off land, try more -ve mpar$beta values or increasing mpar$buffer distance")
+          new.xy <- xy
+        } else {
+          idx <- which(is.na(cells[, 3]))[1]
+          cell.water <- cells[idx, 2]
+          new.xy <- xyFromCell(data$land, cell.water) %>% rbind()
+        }
       } else {
         new.xy <- new3.xy
       }
