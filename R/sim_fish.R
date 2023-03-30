@@ -58,7 +58,7 @@ sim_fish <-
 
       if (length(grep("+units=km", data$land)) == 0)
         stop("raster projection must have units in km")
-      if (length(grep("prj", names(data$prj))) == 0) {
+      if (length(grep("prj", names(data))) == 0) {
         data$prj <- crs(data$land)
       }
     }

@@ -26,7 +26,7 @@
 ##' failures.
 ##' @importFrom raster projectExtent extent crs
 ##' @importFrom sf st_transform st_bbox st_make_valid st_buffer st_crop st_as_sf
-##' @importFrom sf st_intersects st_coordinates
+##' @importFrom sf st_intersects st_coordinates st_crs
 ##' @importFrom dplyr "%>%" bind_rows summarise rename
 ##' @importFrom pathroutr prt_visgraph prt_reroute
 ##' @importFrom ggplot2 ggplot geom_sf geom_point geom_path aes coord_sf
@@ -45,6 +45,10 @@ find_route <- function(data,
                     centroids = FALSE,
                     keep.coas = NULL
                     ) {
+
+  if(length(grep("prj", names(data))) == 0) {
+    data$prj <- crs(data$land)
+  }
 
   cat("finding route around land barriers...\n")
 
@@ -169,12 +173,11 @@ find_route <- function(data,
         shape = 15
       ) +
       coord_sf(
-        datum = data$prj,
+        datum = st_crs(data$prj),
         xlim = extendrange(coas.p$x, f = 0.2),
         ylim = extendrange(coas.p$y, f = 0.2),
         expand = FALSE
       )
-
     if (detach.dplyr.on.end)
       detach(package:dplyr)
     if (detach.sf.on.end)
