@@ -35,7 +35,7 @@
 ##' x <- generate_env(ext = c(-70,43,-52,53), res = c(0.05,0.05), grad = TRUE)
 ##'
 ##' my.par <- sim_par(N=400, time.step=60*6, start = c(-7260, 5930),
-##' coa = c(-6300, 6680), nu = 0.6, rho = 0.7)
+##' coa = c(-6300, 6680), nu = 0.6, rho = 0.7, buffer = 5)
 ##' z <- sim_fish(id = 1, data = x, mpar = my.par)
 ##'
 ##' map(z, env = x)
