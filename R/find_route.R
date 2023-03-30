@@ -185,7 +185,7 @@ find_route <- function(data,
 
     return(list(coas.m, m))
   } else {
-    cat("no land barriers detected, returning original CoA...\n")
+    cat("no land barriers detected, using original CoA...\n")
     return(list(mpar$coa, NULL))
   }
 }
