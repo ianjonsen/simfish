@@ -30,8 +30,8 @@ be displayed on map}
 \item{zoom}{logical (default: FALSE); should map be zoomed to extent of
 simulated track, otherwise map uses extents from the land raster in \code{env}}
 
-\item{...}{graphical parameters. Arguments that can be passed to \code{ggplot2}
-functions, such as \code{xlim = c(20,40)}}
+\item{...}{graphical parameters. Arguments that can be passed to
+\code{ggplot2::coord_sf()}, such as \code{xlim = c(20,40)}.}
 }
 \value{
 a ggplot object

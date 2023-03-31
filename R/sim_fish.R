@@ -49,9 +49,12 @@ sim_fish <-
   ) {
 
     if (!is.null(data)) {
-      if (class(data$land)[1] != "RasterLayer") stop("land must be a RasterLayer")
-      if (class(data$grad)[1] != "RasterStack") stop("grad must be a RasterStack")
-      if (class(data$grad)[1] == "RasterStack" & nlayers(data$grad) != 2)
+      if (class(data$land)[1] != "RasterLayer")
+        stop("land must be a RasterLayer")
+      if (class(data$grad)[1] != "RasterStack")
+        stop("grad must be a RasterStack")
+      if (class(data$grad)[1] == "RasterStack" &
+          nlayers(data$grad) != 2)
         stop("grad must be a RasterStack with 2 layers")
 
       if (length(grep("+units=km", data$land)) == 0)
@@ -59,15 +62,18 @@ sim_fish <-
       if (length(grep("prj", names(data))) == 0) {
         data$prj <- crs(data$land, asText = TRUE)
       }
-    }
-    ## test that start & coa are not on land
-    st.test <- extract(data$land, rbind(mpar$start))
-    if(!is.na(st.test)) stop("Start location specified in mpar$start is on land",
-                            call. = FALSE)
-    if(is.null(dim(mpar$coa)) & !is.null(mpar$coa)) {
-      coa.test <- extract(data$land, rbind(mpar$coa))
-      if(!is.na(coa.test)) stop("CoA location specified in mpar$coa is on land",
-                               call. = FALSE)
+
+      ## test that start & coa are not on land
+      st.test <- extract(data$land, rbind(mpar$start))
+      if (!is.na(st.test))
+        stop("Start location specified in mpar$start is on land",
+             call. = FALSE)
+      if (is.null(dim(mpar$coa)) & !is.null(mpar$coa)) {
+        coa.test <- extract(data$land, rbind(mpar$coa))
+        if (!is.na(coa.test))
+          stop("CoA location specified in mpar$coa is on land",
+               call. = FALSE)
+      }
     }
 
     if(is.null(dim(mpar$coa)[1]) & !is.null(data)) {

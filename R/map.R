@@ -13,8 +13,8 @@
 ##' be displayed on map
 ##' @param zoom logical (default: FALSE); should map be zoomed to extent of
 ##' simulated track, otherwise map uses extents from the land raster in `env`
-##' @param ... graphical parameters. Arguments that can be passed to `ggplot2`
-##' functions, such as `xlim = c(20,40)`
+##' @param ... graphical parameters. Arguments that can be passed to
+##' `ggplot2::coord_sf()`, such as `xlim = c(20,40)`.
 ##'
 ##' @return a ggplot object
 ##'
