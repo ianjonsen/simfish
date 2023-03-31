@@ -47,10 +47,10 @@ find_route <- function(data,
                     ) {
 
   if(length(grep("prj", names(data))) == 0) {
-    data$prj <- crs(data$land)
+    data$prj <- crs(data$land, asText = TRUE)
   }
 
-  cat("finding route around land barriers...\n")
+  message("checking for land barriers...")
 
   if(inherits(mpar$coa, "matrix")) {
     warning("Multiple CoA's detected in mpar, using the last CoA. All others will be overwritten",
@@ -71,7 +71,6 @@ find_route <- function(data,
     detach.sf.on.end <- TRUE
     suppressMessages(attachNamespace("sf"))
   }
-
 
   wm <- ne_countries(scale = 10, returnclass = "sf")
   ext.ll <- data$land %>%
@@ -102,7 +101,9 @@ find_route <- function(data,
 
   ## test if any point falls on land, if not then nothing to do
   idx <- as.vector(st_intersects(xy.sf, land, sparse = FALSE))
-  if(sum(idx) != 0) {
+
+  message("finding route around land barriers...")
+  if(sum(idx) > 0) {
     ## set start and end points to TRUE so they are included
     idx[c(1, npts)] <- TRUE
     xy.sf <- xy.sf[idx,]
@@ -116,8 +117,12 @@ find_route <- function(data,
       as.data.frame() %>%
       rename(x = X, y = Y)
 
-    coas.df <- data.frame(x = approx(coas.p$x, n = coas)$y,
+    if(nrow(coas.p) > 1) {
+      coas.df <- data.frame(x = approx(coas.p$x, n = coas)$y,
                           y = approx(coas.p$y, n = coas)$y)
+    } else {
+      coas.df <- coas.p
+    }
 
     if (!is.null(keep.coas))
       coas.df <- coas.df[keep.coas,]
@@ -145,17 +150,22 @@ find_route <- function(data,
               fill = grey(0.4)) +
       geom_sf(data = xy.sf,
               col = "red",
-              size = 0.8) +
-      geom_path(data = coas.p,
-                aes(x, y),
-                col = 'blue3',
-                linewidth = 0.5) +
-      geom_point(data = coas.p,
+              size = 0.8)
+
+    if(nrow(coas.p) > 1) {
+      m <- m +     geom_path(data = coas.p,
+                             aes(x, y),
+                             col = 'blue3',
+                             linewidth = 0.5)
+    }
+
+      m <- m + geom_point(data = coas.p,
                  aes(x, y),
                  col = 'blue3',
                  size = 0.7) +
       geom_point(
-        data = with(mpar, data.frame(x = start[1], y = start[2])),
+        data = with(mpar, data.frame(x = start[1],
+                                     y = start[2])),
         aes(x, y),
         col = "blue",
         shape = 17,
@@ -171,13 +181,24 @@ find_route <- function(data,
         col = "firebrick",
         size = 5,
         shape = 15
-      ) +
-      coord_sf(
-        datum = st_crs(data$prj),
-        xlim = extendrange(coas.p$x, f = 0.2),
-        ylim = extendrange(coas.p$y, f = 0.2),
-        expand = FALSE
       )
+
+      if(nrow(coas.p) > 1) {
+        m <- m + coord_sf(
+          datum = st_crs(data$prj),
+          xlim = extendrange(coas.p$x, f = 0.2),
+          ylim = extendrange(coas.p$y, f = 0.2),
+          expand = FALSE
+        )
+      } else {
+        m <- m + coord_sf(
+          datum = st_crs(data$prj),
+          xlim = extent(data$land)[1:2],
+          ylim = extent(data$land)[3:4],
+          expand = FALSE
+        )
+      }
+
     if (detach.dplyr.on.end)
       detach(package:dplyr)
     if (detach.sf.on.end)
@@ -185,7 +206,7 @@ find_route <- function(data,
 
     return(list(coas.m, m))
   } else {
-    cat("no land barriers detected, using original CoA...\n")
+    message("no land barriers detected, using original CoA...")
     return(list(mpar$coa, NULL))
   }
 }

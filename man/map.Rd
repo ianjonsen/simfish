@@ -10,7 +10,7 @@ map(
   by.id = FALSE,
   coas = FALSE,
   term.pts = TRUE,
-  zoom = TRUE,
+  zoom = FALSE,
   ...
 )
 }
@@ -27,10 +27,11 @@ colour tracks by id}
 \item{term.pts}{logical (default: TRUE); should terminal (start, end) points
 be displayed on map}
 
-\item{zoom}{logical (default: TRUE); should map be zoomed to extent of
+\item{zoom}{logical (default: FALSE); should map be zoomed to extent of
 simulated track, otherwise map uses extents from the land raster in \code{env}}
 
-\item{...}{additional arguments to be ignored}
+\item{...}{graphical parameters. Arguments that can be passed to \code{ggplot2}
+functions, such as \code{xlim = c(20,40)}}
 }
 \value{
 a ggplot object

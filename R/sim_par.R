@@ -55,7 +55,7 @@ sim_par <-
       start.dt = ISOdatetime(2023,03,10,12,00,00, tz="UTC"),
       start = c(0, 0),
       coa = cbind(c(15, 30)),
-      coa.tol = NA,
+      coa.tol = 1,
       nu = 1,
       rho = 0.4,
       bl = 2,

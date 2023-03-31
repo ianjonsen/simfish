@@ -57,8 +57,17 @@ sim_fish <-
       if (length(grep("+units=km", data$land)) == 0)
         stop("raster projection must have units in km")
       if (length(grep("prj", names(data))) == 0) {
-        data$prj <- crs(data$land)
+        data$prj <- crs(data$land, asText = TRUE)
       }
+    }
+    ## test that start & coa are not on land
+    st.test <- extract(data$land, rbind(mpar$start))
+    if(!is.na(st.test)) stop("Start location specified in mpar$start is on land",
+                            call. = FALSE)
+    if(is.null(dim(mpar$coa)) & !is.null(mpar$coa)) {
+      coa.test <- extract(data$land, rbind(mpar$coa))
+      if(!is.na(coa.test)) stop("CoA location specified in mpar$coa is on land",
+                               call. = FALSE)
     }
 
     if(is.null(dim(mpar$coa)[1]) & !is.null(data)) {
@@ -77,7 +86,7 @@ sim_fish <-
       preroute <- TRUE
     }
 
-    cat("simulating track...\n")
+    message("simulating track...")
     ## define location matrix & initialise start position
     ## xy[, 1:2] - location coordinates
     ## xy[, 3] - mean turn angle

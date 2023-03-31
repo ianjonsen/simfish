@@ -11,9 +11,10 @@
 ##' @param coas logical (default: FALSE); should CoA's be displayed on map
 ##' @param term.pts logical (default: TRUE); should terminal (start, end) points
 ##' be displayed on map
-##' @param zoom logical (default: TRUE); should map be zoomed to extent of
+##' @param zoom logical (default: FALSE); should map be zoomed to extent of
 ##' simulated track, otherwise map uses extents from the land raster in `env`
-##' @param ... additional arguments to be ignored
+##' @param ... graphical parameters. Arguments that can be passed to `ggplot2`
+##' functions, such as `xlim = c(20,40)`
 ##'
 ##' @return a ggplot object
 ##'
@@ -31,7 +32,7 @@ map <- function(x,
                 by.id = FALSE,
                 coas = FALSE,
                 term.pts = TRUE,
-                zoom = TRUE,
+                zoom = FALSE,
                 ...) {
   if(is.null(env)) stop("a raster defining the simulation environment must be supplied")
 
@@ -155,10 +156,11 @@ map <- function(x,
       m <- m + coord_sf(
         expand = FALSE,
         xlim = extendrange(x$sim$x, f= 0.2),
-        ylim = extendrange(x$sim$y, f= 0.2)
+        ylim = extendrange(x$sim$y, f= 0.2),
+        ...
       )
     } else {
-      m <- m + coord_sf(expand = FALSE)
+      m <- m + coord_sf(expand = FALSE, ...)
     }
 
     return(m)

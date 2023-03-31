@@ -35,8 +35,8 @@ remotes::install_github("ianjonsen/simfish")
 # Example 1 - simulate a fish track in a featureless environment
 
 ``` r
-require(simfish, quietly = TRUE)
 require(tidyverse, quietly = TRUE)
+require(simfish, quietly = TRUE)
 ```
 
 ## Set up the simulation
@@ -57,13 +57,15 @@ my.par <- sim_par(
 
 ``` r
 ## simulate a single track
-out <- sim_fish(id = 1, 
+s1 <- sim_fish(id = 1, 
                 data = NULL, 
                 mpar = my.par)
 ```
 
+    #> simulating track...
+
 ``` r
-plot(out)
+plot(s1)
 ```
 
 <img src="man/figures/README-ex1_plot-1.png" width="100%" />
@@ -78,30 +80,26 @@ require(sf, quietly = TRUE)
 
 ``` r
 ## create raster using rnaturalearth hires polygon data
-land <- generate_env(ext = c(-70,43,-52,53), 
-                     res = c(0.03,0.03)) 
-
-grad <- generate_grad(land)
+x <- generate_env(ext = c(-70,43,-52,53), 
+                     res = c(0.02,0.02), 
+                     grad = TRUE) 
 ```
 
 ## Set up the simulation
 
 ``` r
-## first create a list with the required data
-x <- list(land = land, 
-          grad = grad, 
-          prj = "+proj=merc +datum=WGS84 +units=km")
-
-## then parameterize the simulation
+## parameterize the simulation
 my.par <- sim_par(
-  N = 90*24,  # number of simulation time steps (60 days x 24 h)
-  start = c(-7260, 5930), # start location for simulated fish
-  time.step = 60, # time step in minutes
-  bl = 3,
-  coa = c(-6250, 6000), # location of centre-of-attraction for biased correlated random walk (can be NA)
-  nu = 0.7, # strength of attraction to CoA (range: 0 - infinity)
+  N = NULL,  # simulation run until fish reaches coa
+  start = c(-6850, 5710), # start location for simulated fish
+  time.step = 60*2, # time step in minutes
+  bl = 2,
+  fl = 0.4,
+  coa = c(-6080, 5930), # location of centre-of-attraction for biased correlated random walk (can be NA)
+  coa.tol = 10, 
+  nu = 0.75, # strength of attraction to CoA (range: 0 - infinity)
   rho = 0.65, # angular dispersion param for move directions (range 0 - 1)
-  beta = c(-10,-10) # potential function parameters for x and y directions to 
+  beta = c(-8,-8) # potential function parameters for x and y directions to 
   # keep fish off land. Larger -ve values result in stronger land avoidance but can
   # introduce unrealistic jumps (possibly across narrow land features) in the track.
 )
@@ -111,10 +109,12 @@ my.par <- sim_par(
 
 ``` r
 ## simulate a single track
-out <- sim_fish(id = 1, 
+s2 <- sim_fish(id = 1, 
                 data = x, 
                 mpar = my.par)
 ```
+
+    #> simulating track...
 
 ## Now simulate acoustic detections on a receiver array - we’ll use the Ocean Tracking Network’s Cabot Strait receiver line
 
@@ -143,14 +143,17 @@ x$recLocs <- recLocs
 ## use calc_pdrf to calculate slope for 50% detection rate at 500 m with an
 ##  intercept of 5
 my.par$pdrf <- calc_pdrf(pdet = 0.5, dist = 500, int = 5)
-out <- out %>%
+s2 <- s2 %>%
   sim_detect(data = x)
 ```
 
 ## Visualise simulated track & detections
 
 ``` r
-simfish::map(out, env = x)
+map(s2, 
+    env = x, 
+    xlim = c(-7000, -6000),
+    ylim = c(5600, 6200))
 ```
 
 <img src="man/figures/README-map-1.png" width="100%" />

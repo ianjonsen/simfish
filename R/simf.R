@@ -46,13 +46,13 @@ simf <- function(data,
       if (!is.na(extract(data$land, rbind(xy[i, 1:2]))) &
           any(!is.na(xy[i, 1:2]))) {
         mpar$land <- TRUE
-        cat("\n stopping simulation: stuck on land")
+        message("stopping simulation: stuck on land")
         break
       }
 
       if (any(is.na(xy[i, 1:2]))) {
         mpar$boundary <- TRUE
-        cat("\n stopping simulation: hit a boundary")
+        message("stopping simulation: hit a boundary")
         break
       }
     }
