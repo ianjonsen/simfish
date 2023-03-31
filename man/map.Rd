@@ -7,6 +7,7 @@
 map(
   x,
   env = NULL,
+  land.poly = FALSE,
   by.id = FALSE,
   coas = FALSE,
   term.pts = TRUE,
@@ -18,6 +19,10 @@ map(
 \item{x}{a simfish simulation object}
 
 \item{env}{...}
+
+\item{land.poly}{logical (default: FALSE); should land be displayed using
+rnaturalearth spatial polygon data, or using the raster used by the simulation.
+The former will look smoother in higher resolution images.}
 
 \item{by.id}{logical (default: FALSE); if x is a multi-track object then
 colour tracks by id}

@@ -22,12 +22,13 @@
 ##' @return a ggplot object
 ##'
 ##' @importFrom ggplot2 ggplot geom_path geom_point aes theme_minimal coord_sf
-##' @importFrom ggplot2 labs theme scale_colour_brewer
+##' @importFrom ggplot2 labs theme scale_colour_brewer element_blank element_rect
 ##' @importFrom rnaturalearth ne_countries
 ##' @importFrom raster projectExtent extent
 ##' @importFrom dplyr "%>%" bind_rows summarise
 ##' @importFrom stars st_as_stars geom_stars
 ##' @importFrom sf st_crop st_make_valid st_transform
+##' @importFrom grDevices extendrange
 ##'
 ##'
 ##' @export
