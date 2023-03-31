@@ -6,6 +6,9 @@
 ##'
 ##' @param x a simfish simulation object
 ##' @param env ...
+##' @param land.poly logical (default: FALSE); should land be displayed using
+##' rnaturalearth spatial polygon data, or using the raster used by the simulation.
+##' The former will look smoother in higher resolution images.
 ##' @param by.id logical (default: FALSE); if x is a multi-track object then
 ##' colour tracks by id
 ##' @param coas logical (default: FALSE); should CoA's be displayed on map
@@ -20,8 +23,11 @@
 ##'
 ##' @importFrom ggplot2 ggplot geom_path geom_point aes theme_minimal coord_sf
 ##' @importFrom ggplot2 labs theme scale_colour_brewer
-##' @importFrom dplyr "%>%" bind_rows
+##' @importFrom rnaturalearth ne_countries
+##' @importFrom raster projectExtent extent
+##' @importFrom dplyr "%>%" bind_rows summarise
 ##' @importFrom stars st_as_stars geom_stars
+##' @importFrom sf st_crop st_make_valid st_transform
 ##'
 ##'
 ##' @export
@@ -29,6 +35,7 @@
 
 map <- function(x,
                 env = NULL,
+                land.poly = FALSE,
                 by.id = FALSE,
                 coas = FALSE,
                 term.pts = TRUE,
@@ -36,8 +43,32 @@ map <- function(x,
                 ...) {
   if(is.null(env)) stop("a raster defining the simulation environment must be supplied")
 
-  if("land" %in% names(env)) {
+  if("land" %in% names(env) & !land.poly) {
     land <- st_as_stars(env$land)
+
+  } else if (land.poly) {
+    ## get correction project from land raster if not already given in env
+    if (length(grep("prj", names(env))) == 0) {
+      env$prj <- crs(env$land, asText = TRUE)
+    }
+
+    wm <- ne_countries(scale = 10, returnclass = "sf")
+    ext.ll <- env$land %>%
+      projectExtent(., crs = 4326) %>%
+      extent()
+    land <- suppressWarnings(
+      wm %>%
+        st_crop(
+          xmin = ext.ll[1],
+          ymin = ext.ll[3],
+          xmax = ext.ll[2],
+          ymax = ext.ll[4]
+        ) %>%
+        st_make_valid()
+    ) %>%
+      summarise(do_union = TRUE) %>%
+      st_transform(crs = env$prj)
+
   }
 
   if(!is.null(nrow(x))) {
@@ -53,7 +84,16 @@ map <- function(x,
       bind_rows()
   }
 
-  m <- ggplot() + geom_stars(data = land)
+  m <- ggplot()
+
+  if(land.poly) {
+    m <- m + geom_sf(data = land,
+                     col = NA,
+                     fill = "steelblue")
+  } else {
+    m <- m + geom_stars(data = land)
+  }
+
 
   if("recLocs" %in% names(env)) {
     m <- m + geom_point(data = env$recLocs,
@@ -147,10 +187,16 @@ map <- function(x,
                  size = 2,
                  colour = "dodgerblue")
   }
-    m <- m + theme_minimal() +
+    m <- m +
     theme(legend.position = "none") +
     labs(x = element_blank(),
          y = element_blank())
+
+    if(land.poly) {
+      m <- m + theme(
+        panel.background = element_rect(fill = grey(0.5)),
+        panel.grid = element_blank())
+    }
 
     if(zoom) {
       m <- m + coord_sf(

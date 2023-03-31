@@ -88,13 +88,13 @@ x <- generate_env(ext = c(-70,43,-52,53),
 ```{r setup simulation}
 ## parameterize the simulation
 my.par <- sim_par(
-  N = NULL,  # simulation run until fish reaches coa
+  N = NULL,  # simulation runs until fish gets to within coa.tol km of CoA 
   start = c(-6850, 5710), # start location for simulated fish
   time.step = 60*2, # time step in minutes
-  bl = 2,
-  fl = 0.4,
+  bl = 2, # move speed in body-lengths / s
+  fl = 0.4, # fork-length (m)
   coa = c(-6080, 5930), # location of centre-of-attraction for biased correlated random walk (can be NA)
-  coa.tol = 10, 
+  coa.tol = 10, # tolerance around CoA(s) (km)
   nu = 0.75, # strength of attraction to CoA (range: 0 - infinity)
   rho = 0.65, # angular dispersion param for move directions (range 0 - 1)
   beta = c(-8,-8) # potential function parameters for x and y directions to 
@@ -130,16 +130,19 @@ download.file("https://members.oceantrack.org//geoserver/wfs?request=getfeature&
 recLocs <- read_csv(tmp) %>%
   filter(deploy_date >= "2020-01-01")
 
+## project receiver locations from long-lat to Mercator grid
 xy <- recLocs %>%
   st_as_sf(., coords = c("stn_long", "stn_lat"), crs = 4326) %>%
   st_transform(crs = "+proj=merc +datum=WGS84 +units=km") %>%
   st_coordinates() %>%
   as.data.frame()
+
+## set all receiver depths to 100 m
 recLocs <- bind_cols(recLocs, xy) %>%
   dplyr::select(id = station_name, x = X, y = Y) %>%
-  mutate(z = 1)
+  mutate(z = 100)
 
-## add receiver locations to data
+## add receiver locations to data list object
 x$recLocs <- recLocs
 
 ## simulate detections of a V13 acoustic tag
