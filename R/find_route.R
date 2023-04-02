@@ -24,7 +24,7 @@
 ##' visualizing the CoA's. The visualization is useful for determining whether to
 ##' use all the CoA's or subset them, and for helping to diagnose route-finding
 ##' failures.
-##' @importFrom raster projectExtent extent crs
+##' @importFrom terra ext crs
 ##' @importFrom sf st_transform st_bbox st_make_valid st_buffer st_crop st_as_sf
 ##' @importFrom sf st_intersects st_coordinates st_crs
 ##' @importFrom dplyr "%>%" bind_rows summarise rename
@@ -47,7 +47,7 @@ find_route <- function(data,
                     ) {
 
   if(length(grep("prj", names(data))) == 0) {
-    data$prj <- crs(data$land, asText = TRUE)
+    data$prj <- crs(data$land, proj = TRUE)
   }
 
   message("checking for land barriers...")
@@ -73,17 +73,13 @@ find_route <- function(data,
   }
 
   wm <- ne_countries(scale = 10, returnclass = "sf")
-  ext.ll <- data$land %>%
-    projectExtent(., crs = 4326) %>%
-    extent()
+  ext.ll <- ext(data$land) %>%
+    project(.,
+            from = data$prj,
+            to = "+proj=longlat +datum=WGS84 +no_defs")
+
   land <- suppressWarnings(
-    wm %>%
-      st_crop(
-        xmin = ext.ll[1],
-        ymin = ext.ll[3],
-        xmax = ext.ll[2],
-        ymax = ext.ll[4]
-      ) %>%
+      st_crop(wm, c(ext.ll[1], ext.ll[3], ext.ll[2], ext.ll[4])) %>%
       st_make_valid()
   ) %>%
     st_transform(crs = data$prj)

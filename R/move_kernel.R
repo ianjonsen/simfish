@@ -27,23 +27,25 @@ move_kernel <- function(data, xy = NULL, mpar, s) {
 
   if (!is.null(data$land)) {
     ## calculate potential fn values
-    pv <- c(extract(data$grad[[1]], new.xy)[1],
-            extract(data$grad[[2]], new.xy)[1])
-    if(any(is.na(pv))) pv <- rbind(c(0,0))
+    pv <- c(0,0)
+    pv[1] <- as.numeric(extract(data$grad[[1]], new.xy))
+    pv[2] <- as.numeric(extract(data$grad[[2]], new.xy))
+    if(any(is.na(pv))) pv <- c(0,0)
 
     new2.xy <- new.xy + pv * mpar$beta
 
     ## if provisional new.xy is on land then try again
-    if (!is.na(extract(data$land, rbind(new2.xy)))) {
-      pv <- c(extract(data$grad[[1]], new2.xy)[1],
-              extract(data$grad[[2]], new2.xy)[1])
-      if(any(is.na(pv))) pv <- rbind(c(0,0))
+    if (!is.na(extract(data$land, new2.xy))) {
+      pv <- c(0,0)
+      pv[1] <- as.numeric(extract(data$grad[[1]], new2.xy))
+      pv[2] <- as.numeric(extract(data$grad[[2]], new2.xy))
+      if(any(is.na(pv))) pv <- c(0,0)
 
       new3.xy <- new.xy + pv * (mpar$beta * 2)
 
       ## if still on land then try moving back to water
       if (!is.na(extract(data$land, new3.xy))) {
-
+      message("finding water...")
         ## find all nearby cells within mpar$buffer km & select the first one in water
         cells <-
           try(extract(

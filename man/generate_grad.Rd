@@ -10,19 +10,11 @@ generate_grad(x)
 \item{x}{input environmental raster}
 }
 \value{
-two gradient rasters defining gradients in distance from water
+two gradient SpatRasters defining gradients in distance from water
 }
 \description{
 create gradient rasters for potential function that constrains
-simulated to stay off land
+simulated to stay off land. Uses the `terra` package instead of `raster` for
+enhanced computational speed
 }
-\examples{
-x <- generate_env(ext = c(-70,43,-52,53), res = c(0.04,0.04))
-g <- generate_grad(x)
-
-raster::plot(g)
-
-}
-\author{
-Ian Jonsen \email{ian.jonsen@mq.edu.au}
-}
+\keyword{internal}

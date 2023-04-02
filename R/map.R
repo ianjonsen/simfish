@@ -6,7 +6,7 @@
 ##'
 ##' @param x a simfish simulation object
 ##' @param env ...
-##' @param land.poly logical (default: FALSE); should land be displayed using
+##' @param land.poly logical (default: TRUE); should land be displayed using
 ##' rnaturalearth spatial polygon data, or using the raster used by the simulation.
 ##' The former will look smoother in higher resolution images.
 ##' @param by.id logical (default: FALSE); if x is a multi-track object then
@@ -18,6 +18,9 @@
 ##' simulated track, otherwise map uses extents from the land raster in `env`
 ##' @param ... graphical parameters. Arguments that can be passed to
 ##' `ggplot2::coord_sf()`, such as `xlim = c(20,40)`.
+##' @param downsample speed up map rendering by down-sampling the land raster,
+##' e.g., `downsample = 1` removes every second pixel. Default is 0 or no
+##' down-sampling. Ignored if `land.poly = TRUE`
 ##'
 ##' @return a ggplot object
 ##'
@@ -36,11 +39,12 @@
 
 map <- function(x,
                 env = NULL,
-                land.poly = FALSE,
+                land.poly = TRUE,
                 by.id = FALSE,
                 coas = FALSE,
                 term.pts = TRUE,
                 zoom = FALSE,
+                downsample = 0,
                 ...) {
   if(is.null(env)) stop("a raster defining the simulation environment must be supplied")
 
@@ -90,9 +94,9 @@ map <- function(x,
   if(land.poly) {
     m <- m + geom_sf(data = land,
                      col = NA,
-                     fill = "steelblue")
+                     fill = "steelblue4")
   } else {
-    m <- m + geom_stars(data = land)
+    m <- m + geom_stars(data = land, downsample = downsample)
   }
 
 

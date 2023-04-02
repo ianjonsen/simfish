@@ -1,8 +1,8 @@
 Package: simfish
 Type: Package
 Title: simulate fish tracks & acoustic detections
-Version: 0.2-01
-Date: 2023-03-30
+Version: 0.2-05
+Date: 2023-04-02
 Author: Ian Jonsen
 Maintainer: Ian Jonsen <ian.jonsen@mq.edu.au>
 Description: facilitates simulation of fish tracks in featureless and semi-realistic environments (coastal oceans, fjords, and lakes). A user-defined raster defining the water body - land boundaries is used to constrain simulated tracks. Fish movements are simulated (currently) as either a correlated random walk or a biased & correlated random walk, with the bias toward a defined Centre-of-Attraction. A potential function is used to ensure the tracks avoid land. The package can also be used to simulate detections of acoustically-tagged fish by acoustic receivers at user-defined locations.
@@ -23,7 +23,8 @@ Imports:
     stars,
     rnaturalearth,
     methods,
-    pathroutr
+    pathroutr,
+    terra
 License: AGPL-3
 Encoding: UTF-8
 LazyData: true

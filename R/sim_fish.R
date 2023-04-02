@@ -15,7 +15,7 @@
 ##' @param mpar - simulation control parameters supplied as a list using `sim_par()`
 ##' See `?sim_par` for details on the simulation parameters.
 ##' @param ... additional, optional arguments to `find_route()`
-##' @importFrom raster extract xyFromCell nlayers crs
+##' @importFrom raster extract nlayers crs
 ##' @importFrom CircStats rwrpcauchy
 ##' @importFrom dplyr "%>%" mutate lag select filter everything
 ##' @importFrom tibble as_tibble
@@ -25,14 +25,14 @@
 ##'
 ##' @examples
 ##' ## A minimal example - simulation with no environment
-##' my.par <- sim_par(N = 1440, time.step = 5, start = c(0, 0), coa = c(0,30))
+##' my.par <- sim_par(N = 500, time.step = 10, start = c(0, 0), coa = c(0,30))
 ##'
 ##' z <- sim_fish(id = 1, mpar = my.par)
 ##'
 ##' plot(z)
 ##'
 ##' ## Simulate in a semi-realistic environment
-##' x <- generate_env(ext = c(-70,43,-52,53), res = c(0.05,0.05), grad = TRUE)
+##' x <- generate_env(ext = c(-70,43,-52,53), res = c(5,5), grad = TRUE)
 ##'
 ##' my.par <- sim_par(N=400, time.step=60*6, start = c(-7260, 5930),
 ##' coa = c(-6300, 6680), nu = 0.6, rho = 0.7)
@@ -49,15 +49,15 @@ sim_fish <-
   ) {
 
     if (!is.null(data)) {
-      if (class(data$land)[1] != "RasterLayer")
-        stop("land must be a RasterLayer")
-      if (class(data$grad)[1] != "RasterStack")
-        stop("grad must be a RasterStack")
-      if (class(data$grad)[1] == "RasterStack" &
+      if (!class(data$land)[1] %in% c("SpatRaster","RasterLayer"))
+        stop("land must be a SpatRaster or RasterLayer")
+      if (!class(data$grad)[1] %in% c("SpatRaster","RasterStack"))
+        stop("grad must be a SpatRaster or RasterStack")
+      if (class(data$grad)[1] %in% c("SpatRaster","RasterStack") &
           nlayers(data$grad) != 2)
-        stop("grad must be a RasterStack with 2 layers")
+        stop("grad must be a SpatRaster or RasterStack with 2 layers")
 
-      if (length(grep("+units=km", data$land)) == 0)
+      if (length(grep("+units=km", crs(data$land, asText = TRUE))) == 0)
         stop("raster projection must have units in km")
       if (length(grep("prj", names(data))) == 0) {
         data$prj <- crs(data$land, asText = TRUE)

@@ -7,11 +7,12 @@
 map(
   x,
   env = NULL,
-  land.poly = FALSE,
+  land.poly = TRUE,
   by.id = FALSE,
   coas = FALSE,
   term.pts = TRUE,
   zoom = FALSE,
+  downsample = 0,
   ...
 )
 }
@@ -20,7 +21,7 @@ map(
 
 \item{env}{...}
 
-\item{land.poly}{logical (default: FALSE); should land be displayed using
+\item{land.poly}{logical (default: TRUE); should land be displayed using
 rnaturalearth spatial polygon data, or using the raster used by the simulation.
 The former will look smoother in higher resolution images.}
 
@@ -34,6 +35,10 @@ be displayed on map}
 
 \item{zoom}{logical (default: FALSE); should map be zoomed to extent of
 simulated track, otherwise map uses extents from the land raster in \code{env}}
+
+\item{downsample}{speed up map rendering by down-sampling the land raster,
+e.g., \code{downsample = 1} removes every second pixel. Default is 0 or no
+down-sampling. Ignored if \code{land.poly = TRUE}}
 
 \item{...}{graphical parameters. Arguments that can be passed to
 \code{ggplot2::coord_sf()}, such as \code{xlim = c(20,40)}.}

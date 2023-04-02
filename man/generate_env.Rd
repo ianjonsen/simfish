@@ -6,8 +6,8 @@
 \usage{
 generate_env(
   ext = NULL,
-  res = c(0.05, 0.05),
   prj = "+proj=merc +datum=WGS84 +units=km",
+  res = c(1, 1),
   grad = FALSE,
   dist = 0
 )
@@ -16,12 +16,12 @@ generate_env(
 \item{ext}{longitude and latitude extents as a 4-element vector:
 (xmin, ymin, xmax, ymax)}
 
-\item{res}{resolution of raster in degrees long and lat. Smaller values
-yield higher resolution but longer computation times.}
-
 \item{prj}{a crs string or EPSG defining the projection for the raster with
 units in km. The default projection is a Mercator grid:
 \code{prj = "+prj=merc +datum=WGS84 +units=km"}.}
+
+\item{res}{resolution of output raster in x,y km (default is 1 km).
+Smaller values yield higher resolution but longer computation times.}
 
 \item{grad}{(logical) generate gradient rasters.
 The gradient rasters (gradient of distance from water in x and y directions)
@@ -40,12 +40,16 @@ or the gradient rasters can be returned.
 \description{
 create environmental raster to constraint simulated tracks
 }
+\details{
+the \code{terra} package is used to generate the land and gradient
+rasters as SpatRaster objects. This allows higher-resolution rasters to be
+generated faster than with the \code{raster} package. The SpatRaster objects are
+converted to RasterLayer (land barrier) and RasterStack (gradients) objects
+for use in \code{sim_fish}.
+}
 \examples{
-x <- generate_env(ext = c(-70,43,-52,53), res = c(0.04,0.04))
+x <- generate_env(ext = c(-70,43,-52,53), res = c(5,5))
 
 raster::plot(x)
 
-}
-\author{
-Ian Jonsen \email{ian.jonsen@mq.edu.au}
 }

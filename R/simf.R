@@ -9,7 +9,7 @@
 ##' Cartesian grid (a featureless environment).
 ##' @param mpar - simulation control parameters supplied as a list using `sim_par()`
 ##' See `?sim_par` for details on the simulation parameters.
-##' @importFrom raster extract xyFromCell nlayers
+##' @importFrom raster extract
 ##' @importFrom CircStats rwrpcauchy
 ##' @importFrom dplyr "%>%" mutate lag select filter everything
 ##' @importFrom tibble as_tibble
