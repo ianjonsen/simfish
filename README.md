@@ -79,7 +79,6 @@ require(sf, quietly = TRUE)
 ``` r
 ## create raster using rnaturalearth hires polygon data
 x <- generate_env(ext = c(-70,43,-52,53), 
-                     res = c(0.02,0.02), 
                      grad = TRUE) 
 ```
 
