@@ -14,6 +14,7 @@
 ##' Cartesian grid (a featureless environment).
 ##' @param mpar - simulation control parameters supplied as a list using `sim_par()`
 ##' See `?sim_par` for details on the simulation parameters.
+##' @param route (logical) turns route-finding on or off (default is TRUE, on)
 ##' @param ... additional, optional arguments to `find_route()`
 ##' @importFrom raster extract nlayers crs
 ##' @importFrom CircStats rwrpcauchy
@@ -45,6 +46,7 @@ sim_fish <-
   function(id=1,
            data = NULL,
            mpar = sim_par(),
+           route = TRUE,
            ...
   ) {
 
@@ -76,7 +78,7 @@ sim_fish <-
       }
     }
 
-    if(is.null(dim(mpar$coa)[1]) & !is.null(data)) {
+    if(is.null(dim(mpar$coa)[1]) & !is.null(data) & route) {
       ## check for barriers between start and coa & reroute via intermediate CoA's
       preroute <- FALSE
       fr.list <- find_route(data, mpar, ...)
@@ -85,7 +87,7 @@ sim_fish <-
         mpar$N <- 10000
         mpar$coa <- fr.list[[1]]
       }
-    } else if(!is.null(dim(mpar$coa)[1]) & !is.null(data)) {
+    } else if((!is.null(dim(mpar$coa)[1]) & !is.null(data)) | !route) {
       preroute <- TRUE
       mpar$N <- 10000
     } else if (is.null(data)) {

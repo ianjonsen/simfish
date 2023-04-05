@@ -4,7 +4,7 @@
 \alias{sim_fish}
 \title{simulate a fish track}
 \usage{
-sim_fish(id = 1, data = NULL, mpar = sim_par(), ...)
+sim_fish(id = 1, data = NULL, mpar = sim_par(), route = TRUE, ...)
 }
 \arguments{
 \item{id}{- identifier for simulation run (individual fish)}
@@ -14,6 +14,8 @@ Cartesian grid (a featureless environment).}
 
 \item{mpar}{- simulation control parameters supplied as a list using `sim_par()`
 See `?sim_par` for details on the simulation parameters.}
+
+\item{route}{(logical) turns route-finding on or off (default is TRUE, on)}
 
 \item{...}{additional, optional arguments to `find_route()`}
 }
