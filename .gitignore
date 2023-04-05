@@ -3,6 +3,5 @@
 .RData
 .Ruserdata
 simfish.Rproj
-
 .DS_Store
 inst/doc

@@ -1,0 +1,22 @@
+---
+title: "Overview"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Overview}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup, echo=FALSE}
+library(simfish)
+```
+
+`simfish` can be used to simulate movement tracks and acoustic detections in featureless and semi-realistic environments. Users can generate an environmental raster, i.e., a raster of land and water, using the built-in `generate_env` function. This function generates both a land raster and two gradient rasters that are used to keep simulated tracks off of land via a potential function - more on that later. Alternatively, users may supply their own environmental rasters  (e.g., generated from an ESRI shapefile or similar) when a fine-scale simulation in a high-resolution environment is required. 
+
