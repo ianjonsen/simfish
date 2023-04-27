@@ -71,8 +71,14 @@ find_route <- function(data,
     detach.sf.on.end <- TRUE
     suppressMessages(attachNamespace("sf"))
   }
-
-  wm <- ne_countries(scale = 10, returnclass = "sf")
+  if(requireNamespace("rnaturalearthhires", quietly = TRUE)) {
+    mscale <- 10
+  } else {
+    message("using lower resolution rnaturalearth data because rnaturalearthhires is not installed.
+          Use remotes::install_github(\"ropensci/rnaturalearthhires\") to install")
+    mscale <- 50
+  }
+  wm <- ne_countries(scale = mscale, returnclass = "sf")
   ext.ll <- ext(data$land) %>%
     project(.,
             from = data$prj,

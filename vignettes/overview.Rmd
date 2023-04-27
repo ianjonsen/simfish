@@ -18,5 +18,7 @@ knitr::opts_chunk$set(
 library(simfish)
 ```
 
-`simfish` can be used to simulate movement tracks and acoustic detections in featureless and semi-realistic environments. Users can generate an environmental raster, i.e., a raster of land and water, using the built-in `generate_env` function. This function generates both a land raster and two gradient rasters that are used to keep simulated tracks off of land via a potential function - more on that later. Alternatively, users may supply their own environmental rasters  (e.g., generated from an ESRI shapefile or similar) when a fine-scale simulation in a high-resolution environment is required. 
+`simfish` can be used to simulate movement tracks and acoustic detections in featureless and semi-realistic environments. Users can generate an environmental raster - a raster of land and water features - using the built-in `generate_env` function. This function generates both a land raster and two gradient rasters that are used to keep simulated tracks off of land via a potential function. Alternatively, users may supply their own environmental rasters  (e.g., generated from an ESRI shapefile or similar) when a fine-scale simulation in a high-resolution environment is required. 
 
+### Parameterizing the simulation
+Simulations are parameterized using the `sim_par` function. `sim_par()` has default values for all parameters, which can be checked by typing `?sim_par`. 

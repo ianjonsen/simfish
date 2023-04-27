@@ -8,28 +8,40 @@ sim_par(...)
 }
 \arguments{
 \item{...}{simulation parameters:
-`N` - number of time steps to simulate, if NULL then simulation runs until
-fish reaches the tolerance distance to Centre-of-Attraction (`coa.tol`);
-`time.step` - duration (min) of each simulation time step;
-`start.dt` - start datetime (POSIXct) of simulation;
-`start` - start location coordinates (grid x, y in km);
-`coa` - Centre-of-Attraction coordinates (grid x, y in km). If > 1 coa
-supplied (as a list) then track is assumed to move toward the coa's
-sequentially;
-`coa.tol` - tolerance distance (km) around CoA to define simulation stopping rule;
-`nu` - strength of attraction to CoA (range: 0 - infinity);
-`rho` - angular dispersion parameter (Wrapped Cauchy) for turn angles;
-`bl` - move speed in body-lengths per second;
-`fl` - fish fork-length (m);
-`pdrf` - logistic intercept & slope parameters defining detection
+
+\strong{\code{N}} - number of time steps to simulate, if NULL then simulation runs until
+fish reaches the tolerance distance to the final Centre-of-Attraction (\code{coa.tol});
+
+\strong{\code{time.step}} - duration (min) of each simulation time step;
+
+\strong{\code{start.dt}} - start datetime (POSIXct) of simulation;
+
+\strong{\code{start}} - start location coordinates (grid x, y in km);
+
+\strong{\code{coa}} - Centre-of-Attraction coordinates (grid x, y in km). If > 1 coa
+supplied (as a matrix) then the simulation uses the coa's sequentially - for example,
+to guide the track around land features lying between the specified start and
+end points;
+
+\strong{\code{coa.tol}} - tolerance distance (km) around CoA(s);
+
+\strong{\code{nu}} - strength of attraction to CoA (range: 0 - infinity);
+
+\strong{\code{rho}} - angular dispersion parameter (Wrapped Cauchy) for turn angles;
+
+\strong{\code{bl}} - move speed in body-lengths per second;
+
+\strong{\code{fl}} - fish fork-length (m);
+
+\strong{\code{pdrf}} - logistic intercept & slope parameters defining detection
 probability as a function of distance between fish and receiver. Default values
 roughly correspond to detection range of V9 tags in the ocean;
 
-`beta` - potential function parameters for x and y directions to
+\strong{\code{beta}} - potential function parameters for x and y directions to
 keep fish off land. Larger -ve values result in stronger land avoidance but can
 introduce unrealistic jumps (possibly across narrow land features) in the track;
 
-`buffer` - distance radius in km to search for water when simulation stuck
+\strong{\code{buffer}} - distance radius in km to search for water when simulation stuck
 on land. Smaller values reduce chance of unrealistic jumps away from land but
 can lead to simulations getting stuck on land. Larger values increase chance
 of unrealistic jumps (possibly across land) but reduce chance of simulations
@@ -49,6 +61,5 @@ my.par <- sim_par(N = 1440, time.step = 5, start = c(0, 0), coa = c(0,30))
 z <- sim_fish(id = 1, mpar = my.par)
 
 plot(z)
-
 
 }

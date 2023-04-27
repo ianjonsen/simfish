@@ -70,11 +70,13 @@ sim_fish <-
       if (!is.na(st.test))
         stop("Start location specified in mpar$start is on land",
              call. = FALSE)
-      if (is.null(dim(mpar$coa)) & !is.null(mpar$coa)) {
+
+      if (!is.null(dim(mpar$coa)) & !is.null(mpar$coa)) {
         coa.test <- extract(data$land, rbind(mpar$coa))
-        if (!is.na(coa.test))
-          stop("CoA location specified in mpar$coa is on land",
-               call. = FALSE)
+        if (sum(!is.na(coa.test)) > 0)
+          warning("removing CoA's detected on land",
+                  immediate. = TRUE, call. = FALSE)
+        mpar$coa <- mpar$coa[-which(!is.na(coa.test)), ]
       }
     }
 
