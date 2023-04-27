@@ -86,12 +86,16 @@ sim_fish <-
       fr.list <- find_route(data, mpar, ...)
 
       if(!is.null(dim(fr.list[[1]])) & is.null(mpar$N)) {
+        Nst <- mpar$N
         mpar$N <- 10000
         mpar$coa <- fr.list[[1]]
       }
     } else if((!is.null(dim(mpar$coa)[1]) & !is.null(data)) | !route) {
       preroute <- TRUE
-      mpar$N <- 10000
+      if(is.null(mpar$N)) {
+        Nst <- mpar$N
+        mpar$N <- 10000
+      }
     } else if (is.null(data)) {
       preroute <- TRUE
     }
@@ -164,6 +168,7 @@ sim_fish <-
       mutate(date = seq(mpar$start.dt, by = 60 * mpar$time.step, length.out = nsim)) %>%
       dplyr::select(id, date, everything())
 
+    mpar$N <- nrow(sim)
     param <- mpar
     if(preroute) {
       out <- list(sim = sim, params = param)
