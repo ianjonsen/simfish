@@ -80,6 +80,17 @@ sim_fish <-
       }
     }
 
+    ## test that if model = "bcrw" then bearing must not be NA
+    if (all(mpar$model == "bcrw", any(is.na(mpar$bearing)))) {
+      stop("If movement model is `bcrw` with bias to a direction, then mpar$bearing can not be NA",
+           call. = FALSE)
+    }
+
+    ## test that if model = "bcrw.coa" then bl must be a scalar
+    if (mpar$model == "bcrw.coa" & length(mpar$bl) > 1) {
+      stop("If movement model is `bcrw.coa` then bl mpar$must be a scalar")
+    }
+
     if(is.null(dim(mpar$coa)[1]) & !is.null(data) & route) {
       ## check for barriers between start and coa & reroute via intermediate CoA's
       preroute <- FALSE

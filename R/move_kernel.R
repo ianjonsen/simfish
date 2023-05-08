@@ -7,23 +7,44 @@
 #' @importFrom raster extract xyFromCell
 #' @keywords internal
 #'
-move_kernel <- function(data, xy = NULL, mpar, s) {
+move_kernel <- function(data, xy = NULL, mpar, s, i) {
 
-  ## biased random walk toward a Center of Attraction
-  if(all(!is.na(mpar$coa))) {
-    delta <- c(mpar$coa[1] - xy[1], mpar$coa[2] - xy[2])
-    psi <- atan2(delta[1], delta[2])
+  switch(mpar$model,
+         bcrw.coa ={
+           ## biased & correlation random walk toward a Center of Attraction
+           if(all(!is.na(mpar$coa))) {
+             delta <- c(mpar$coa[1] - xy[1], mpar$coa[2] - xy[2])
+             psi <- atan2(delta[1], delta[2])
 
-    phi <- atan2(sin(xy[3]) + mpar$nu * sin(psi), cos(xy[3]) + mpar$nu * cos(psi))
+             phi <- atan2(sin(xy[3]) + mpar$nu * sin(psi), cos(xy[3]) + mpar$nu * cos(psi))
 
-  } else {
-    phi <- atan2(sin(xy[3]), cos(xy[3]))
-  }
+           } else {
+             phi <- atan2(sin(xy[3]), cos(xy[3]))
+           }
 
-  ## fixed rho determines degree of correlation in movements
-  mu <- rwrpcauchy(1, phi, mpar$rho)
+           ## fixed rho determines degree of correlation in movements
+           mu <- rwrpcauchy(1, phi, mpar$rho)
+           new.xy <- cbind(xy[1] + sin(mu) * s, xy[2] + cos(mu) * s)
+         },
+         bcrw = {
+           ## biased & correlated random walk toward a direction
+           phi <- mpar$bearing[i]
 
-  new.xy <- cbind(xy[1] + sin(mu) * s, xy[2] + cos(mu) * s)
+           ## strength of correlation given by variable (or fixed) rho
+           if(length(mpar$rho) == 1) {
+             ## fixed rho
+             mu <- rwrpcauchy(1, phi, mpar$rho)
+           } else if(length(mpar$rho) > 1) {
+             ## variable rho, possibly based on some covariate supplied to mpar
+             mu <- rwrpcauchy(1, phi, mpar$rho[i])
+           }
+           if(length(mpar$bl) > 1) {
+             ## Convert from m/s to km/min * mpar$time.step so units match land raster
+             s <- mpar$fl/1000 * mpar$bl[i] * 60 * mpar$time.step
+           }
+           new.xy <- cbind(xy[1] + sin(mu) * s, xy[2] + cos(mu) * s)
+         })
+
 
   if (!is.null(data$land)) {
     ## calculate potential fn values

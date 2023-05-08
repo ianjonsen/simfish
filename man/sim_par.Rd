@@ -29,7 +29,11 @@ end points;
 
 \strong{\code{rho}} - angular dispersion parameter (Wrapped Cauchy) for turn angles;
 
-\strong{\code{bl}} - move speed in body-lengths per second;
+\strong{\code{bearing}} - a scalar or vector of bearings (in radians) that give the bias
+in \code{bcrw} directions. Ignored if model = \code{bcrw.coa}
+
+\strong{\code{bl}} - move speed in body-lengths per second. Can be a vector, if model = "bcrw".
+If bl is a vector then it must have the same length as \code{bearing};
 
 \strong{\code{fl}} - fish fork-length (m);
 

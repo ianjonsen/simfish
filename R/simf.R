@@ -40,7 +40,8 @@ simf <- function(data,
     xy[i, ] <- move_kernel(data,
                            xy = xy[i-1, ],
                            mpar = mpar,
-                           s)
+                           s,
+                           i)
 
     if (!is.null(data$land)) {
       if (!is.na(extract(data$land, rbind(xy[i, 1:2]))) &

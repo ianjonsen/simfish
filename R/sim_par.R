@@ -24,7 +24,11 @@
 ##'
 ##' **`rho`** - angular dispersion parameter (Wrapped Cauchy) for turn angles;
 ##'
-##' **`bl`** - move speed in body-lengths per second;
+##' **`bearing`** - a scalar or vector of bearings (in radians) that give the bias
+##' in `bcrw` directions. Ignored if model = `bcrw.coa`
+##'
+##' **`bl`** - move speed in body-lengths per second. Can be a vector, if model = "bcrw".
+##' If bl is a vector then it must have the same length as `bearing`;
 ##'
 ##' **`fl`** - fish fork-length (m);
 ##'
@@ -66,10 +70,12 @@ sim_par <-
       time.step = 60,
       start.dt = as.POSIXct(unclass(Sys.time()), origin = "1970-01-01", tz = "UTC"),
       start = c(0, 0),
+      model = c("bcrw.coa", "bcrw"),
       coa = cbind(c(15, 30)),
       coa.tol = 1,
       nu = 1,
       rho = 0.5,
+      bearing = NA,
       bl = 1.5,
       fl = 0.15,
       pdrf = c(5, -0.02), # = p(0.5) @ 250 m  + < p(0.01) @ 500 m   [c(4.865, -0.0139)  (~ consistent w HFX line V9 @ high power)]
