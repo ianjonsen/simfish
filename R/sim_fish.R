@@ -73,10 +73,11 @@ sim_fish <-
 
       if (!is.null(dim(mpar$coa)) & !is.null(mpar$coa)) {
         coa.test <- extract(data$land, rbind(mpar$coa))
-        if (sum(!is.na(coa.test)) > 0)
+        if (sum(!is.na(coa.test)) > 0) {
           warning("removing CoA's detected on land",
                   immediate. = TRUE, call. = FALSE)
         mpar$coa <- mpar$coa[-which(!is.na(coa.test)), ]
+        }
       }
     }
 
@@ -133,6 +134,7 @@ sim_fish <-
       ## multiple CoA to get around land masses
       coas <- mpar$coa
       tmp <- list()
+
       for (i in 1:nrow(mpar$coa)) {
         if(i == 1) {
           mpar$coa <- coas[1,]
