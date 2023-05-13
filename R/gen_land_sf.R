@@ -22,24 +22,24 @@ gen_land_sf <- function(ext,
     stop("Extents in long,lat must be provided.")
 
   if (requireNamespace("rnaturalearthhires", quietly = TRUE)) {
-    env <- ne_countries(scale = 10, returnclass = "sf")
+    env <- ne_countries(scale = 10, returnclass = "sf") %>%
+      st_make_valid
   } else {
     message(
       "using medium resolution data; install 'rnaturalearthhires' pkg for highest resolution data"
     )
-    env <- ne_countries(scale = 50, returnclass = "sf")
+    env <- ne_countries(scale = 50, returnclass = "sf") %>%
+      st_make_valid
   }
 
-  env.sf <- suppressWarnings(
-    env %>%
-      st_crop(
-        xmin = ext[1],
-        ymin = ext[2],
-        xmax = ext[3],
-        ymax = ext[4]
-      ) %>%
-      summarise(do_union = TRUE)
-  )
+env.sf <- suppressWarnings(env %>%
+                             st_crop(., y = c(
+                               xmin = ext[1],
+                               ymin = ext[2],
+                               xmax = ext[3],
+                               ymax = ext[4]
+                             )) %>%
+                             summarise(do_union = TRUE))
 
   if (dist > 0) {
     env.sf <- env.sf %>%
