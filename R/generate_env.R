@@ -55,7 +55,7 @@ generate_env <- function(ext = NULL,
   y <- rast(crs = crs.from,
                          vals = 1,
                          resolution = c(0.0025, 0.0025),
-                         extent = ext(env.sf))
+                         extent = terra::ext(env.sf))
 
   x <- rasterize(env.sf, y, fun = "min")
 

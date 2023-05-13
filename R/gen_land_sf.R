@@ -11,7 +11,7 @@
 ##' @return an sf data.frame defining the simulation environment (i.e., ocean with
 ##' land barriers).
 ##'
-##' @importFrom sf st_crop st_make_valid st_buffer
+##' @importFrom sf st_crop st_make_valid st_buffer "st_crs<-"
 ##' @importFrom dplyr "%>%" summarise
 ##' @importFrom rnaturalearth ne_countries
 ##'
@@ -47,6 +47,9 @@ env.sf <- suppressWarnings(env %>%
   }
   env.sf <- env.sf %>%
     st_make_valid()
+
+  ## ensure longlat crs is assigned
+  st_crs(env.sf) <- 4326
 
   return(env.sf)
 }
