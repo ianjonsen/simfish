@@ -26,7 +26,6 @@
 ##' @importFrom ggplot2 theme theme_dark theme_minimal element_blank geom_sf
 ##' @importFrom ggplot2 xlim ylim labs scale_colour_brewer
 ##' @importFrom CircStats rwrpcauchy
-##' @importFrom ctmcmove rast.grad
 ##' @importFrom grDevices hcl.colors
 ##' @importFrom graphics abline
 ##' @importFrom lubridate week yday
